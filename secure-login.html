@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paid2Say — Secure Login</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Nav */
+        .nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 40px; border-bottom: 1px solid #1e1e2e;
+        }
+        .nav-logo {
+            font-size: 1.3rem; font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { color: #8892a4; text-decoration: none; font-size: 0.85rem; }
+
+        /* Container */
+        .auth-container {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            padding: 40px 20px;
+        }
+        .auth-box {
+            width: 100%; max-width: 420px;
+        }
+
+        /* Auth Card */
+        .auth-card {
+            background: #12121a; border: 1px solid #2a2a3a; border-radius: 16px;
+            padding: 36px; margin-bottom: 16px;
+        }
+        .auth-card h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 6px; text-align: center; }
+        .auth-card .sub { font-size: 0.85rem; color: #6b7280; text-align: center; margin-bottom: 24px; }
+
+        /* Tabs */
+        .auth-tabs {
+            display: flex; margin-bottom: 24px; background: #0a0a0f; border-radius: 10px; padding: 4px;
+        }
+        .auth-tab {
+            flex: 1; padding: 10px; text-align: center; border-radius: 8px;
+            font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+            color: #6b7280;
+        }
+        .auth-tab.active { background: #7b2ff7; color: white; }
+
+        /* Form */
+        .form-group { margin-bottom: 18px; }
+        .form-label { font-size: 0.83rem; font-weight: 600; margin-bottom: 6px; display: block; }
+        .input-field {
+            width: 100%; background: #0a0a0f; border: 1px solid #3a3a5a; border-radius: 8px;
+            padding: 12px 14px; color: #e0e0e0; font-size: 0.9rem; outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-field:focus { border-color: #7b2ff7; }
+        .input-field::placeholder { color: #4b5563; }
+        .input-row { display: flex; gap: 10px; }
+
+        /* Password Strength */
+        .pw-strength { margin-top: 8px; }
+        .pw-bar { height: 4px; background: #2a2a3a; border-radius: 2px; overflow: hidden; margin-bottom: 4px; }
+        .pw-fill { height: 100%; border-radius: 2px; transition: width 0.3s, background 0.3s; }
+        .pw-label { font-size: 0.72rem; }
+
+        /* Checkbox */
+        .checkbox-row {
+            display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px;
+        }
+        .cb {
+            min-width: 18px; height: 18px; border: 2px solid #3a3a5a; border-radius: 4px;
+            margin-top: 2px; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; font-size: 0.65rem; transition: all 0.2s;
+        }
+        .cb.checked { background: #7b2ff7; border-color: #7b2ff7; color: white; }
+        .cb-text { font-size: 0.8rem; color: #8892a4; line-height: 1.4; }
+        .cb-text a { color: #7b2ff7; text-decoration: none; }
+
+        /* Button */
+        .btn-primary {
+            width: 100%; padding: 14px; border-radius: 10px; font-weight: 700;
+            font-size: 0.95rem; border: none; cursor: pointer; transition: transform 0.2s;
+            background: linear-gradient(135deg, #7b2ff7, #5b1fd7); color: white;
+        }
+        .btn-primary:hover { transform: scale(1.02); }
+        .btn-primary.green { background: linear-gradient(135deg, #22c55e, #16a34a); }
+
+        /* Divider */
+        .divider {
+            display: flex; align-items: center; gap: 12px; margin: 20px 0;
+        }
+        .divider hr { flex: 1; border: none; border-top: 1px solid #2a2a3a; }
+        .divider span { font-size: 0.75rem; color: #4b5563; }
+
+        /* Social Login */
+        .social-btns { display: flex; gap: 10px; margin-bottom: 16px; }
+        .social-btn {
+            flex: 1; padding: 12px; border-radius: 8px; text-align: center;
+            font-size: 0.82rem; font-weight: 600; cursor: pointer;
+            border: 1px solid #2a2a3a; background: #1a1a2e; color: #e0e0e0;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: border-color 0.2s;
+        }
+        .social-btn:hover { border-color: #3a3a5a; }
+
+        /* Link */
+        .auth-link {
+            text-align: center; font-size: 0.83rem; color: #6b7280;
+        }
+        .auth-link a { color: #7b2ff7; text-decoration: none; font-weight: 600; }
+
+        /* 2FA Section */
+        .twofa-card {
+            background: #12121a; border: 1px solid #2a2a3a; border-radius: 16px;
+            padding: 36px; text-align: center;
+        }
+        .twofa-card h2 { font-size: 1.3rem; margin-bottom: 8px; }
+        .twofa-card .sub { font-size: 0.85rem; color: #6b7280; margin-bottom: 24px; }
+        .twofa-icon { font-size: 3rem; margin-bottom: 16px; }
+        .code-inputs {
+            display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;
+        }
+        .code-input {
+            width: 48px; height: 56px; background: #0a0a0f; border: 2px solid #3a3a5a;
+            border-radius: 10px; text-align: center; font-size: 1.4rem; font-weight: 700;
+            color: #e0e0e0; outline: none; transition: border-color 0.2s;
+        }
+        .code-input:focus { border-color: #7b2ff7; }
+        .code-input.filled { border-color: #22c55e; color: #22c55e; }
+        .resend-link {
+            font-size: 0.8rem; color: #6b7280; margin-top: 12px;
+        }
+        .resend-link a { color: #7b2ff7; text-decoration: none; }
+        .twofa-method {
+            display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;
+        }
+        .method-btn {
+            padding: 8px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+            cursor: pointer; border: 1px solid #2a2a3a; background: #1a1a2e; color: #6b7280;
+        }
+        .method-btn.active { border-color: #7b2ff7; color: #7b2ff7; background: #1e1b4b; }
+
+        /* KYC Section */
+        .kyc-card {
+            background: #12121a; border: 1px solid #2a2a3a; border-radius: 16px; padding: 36px;
+        }
+        .kyc-card h2 { font-size: 1.3rem; margin-bottom: 8px; }
+        .kyc-card .sub { font-size: 0.85rem; color: #6b7280; margin-bottom: 24px; }
+        .kyc-steps {
+            display: flex; gap: 16px; margin-bottom: 24px;
+        }
+        .kyc-step {
+            flex: 1; text-align: center; padding: 16px; background: #1a1a2e;
+            border-radius: 10px; position: relative;
+        }
+        .kyc-step .step-num {
+            width: 28px; height: 28px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; margin: 0 auto 8px;
+            font-size: 0.8rem; font-weight: 700;
+        }
+        .step-num.done { background: #22c55e; color: white; }
+        .step-num.current { background: #7b2ff7; color: white; }
+        .step-num.pending { background: #2a2a3a; color: #6b7280; }
+        .kyc-step .step-label { font-size: 0.75rem; color: #8892a4; }
+        .kyc-step .step-label.active { color: #e0e0e0; font-weight: 600; }
+
+        .ssn-note {
+            background: #14532d22; border: 1px solid #22c55e33; border-radius: 10px;
+            padding: 14px; display: flex; gap: 10px; align-items: flex-start; margin-top: 16px;
+        }
+        .ssn-note .note-icon { font-size: 1rem; }
+        .ssn-note p { font-size: 0.78rem; color: #86efac; line-height: 1.4; }
+
+        /* Security Badge */
+        .security-badge {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 12px; font-size: 0.78rem; color: #6b7280;
+        }
+        .security-badge .shield { color: #22c55e; }
+
+        /* PIN Section */
+        .pin-card {
+            background: #12121a; border: 1px solid #2a2a3a; border-radius: 16px;
+            padding: 36px; text-align: center;
+        }
+        .pin-card h2 { font-size: 1.3rem; margin-bottom: 8px; }
+        .pin-card .sub { font-size: 0.85rem; color: #6b7280; margin-bottom: 24px; }
+        .pin-dots {
+            display: flex; gap: 16px; justify-content: center; margin-bottom: 24px;
+        }
+        .pin-dot {
+            width: 16px; height: 16px; border-radius: 50%;
+            background: #2a2a3a; transition: background 0.2s;
+        }
+        .pin-dot.filled { background: #7b2ff7; }
+        .pin-keypad {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 10px; max-width: 240px; margin: 0 auto;
+        }
+        .pin-key {
+            height: 52px; border-radius: 10px; display: flex;
+            align-items: center; justify-content: center;
+            font-size: 1.2rem; font-weight: 600; cursor: pointer;
+            background: #1a1a2e; border: 1px solid #2a2a3a;
+            transition: background 0.15s;
+        }
+        .pin-key:hover { background: #2a2a3a; }
+        .pin-key:active { background: #7b2ff7; }
+        .pin-key.empty { background: transparent; border: none; cursor: default; }
+        .pin-key.delete { font-size: 0.85rem; color: #f87171; }
+
+        /* Step Indicators */
+        .page-dots {
+            display: flex; gap: 8px; justify-content: center; margin: 20px 0;
+        }
+        .page-dot {
+            width: 8px; height: 8px; border-radius: 50%; background: #2a2a3a;
+        }
+        .page-dot.active { background: #7b2ff7; width: 24px; border-radius: 4px; }
+
+        /* Sections */
+        .section-divider {
+            text-align: center; padding: 40px 20px 20px;
+            max-width: 420px; margin: 0 auto;
+        }
+        .section-divider h3 {
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px;
+            color: #3a3a5a; position: relative;
+        }
+        .section-divider h3::before, .section-divider h3::after {
+            content: ''; position: absolute; top: 50%; width: 60px;
+            height: 1px; background: #1e1e2e;
+        }
+        .section-divider h3::before { right: 105%; }
+        .section-divider h3::after { left: 105%; }
+
+        footer { text-align: center; padding: 30px; color: #3a3a5a; font-size: 0.75rem; }
+
+        @media (max-width: 500px) {
+            .nav { padding: 12px 20px; }
+            .auth-card, .twofa-card, .kyc-card, .pin-card { padding: 24px; }
+            .social-btns { flex-direction: column; }
+            .kyc-steps { flex-direction: column; }
+            .code-inputs { gap: 6px; }
+            .code-input { width: 40px; height: 48px; font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="nav">
+    <div class="nav-logo">Paid2Say</div>
+    <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">For Businesses</a>
+        <a href="#">For Affiliates</a>
+    </div>
+</div>
+
+<!-- ========== SCREEN 1: LOGIN ========== -->
+<div class="section-divider"><h3>Screen 1 — Login</h3></div>
+
+<div class="auth-container" style="padding-top: 10px;">
+    <div class="auth-box">
+        <div class="auth-card">
+            <h2>Welcome Back</h2>
+            <div class="sub">Log in to your Paid2Say account</div>
+
+            <div class="auth-tabs">
+                <div class="auth-tab active" onclick="switchTab(this, 'affiliate')">Affiliate</div>
+                <div class="auth-tab" onclick="switchTab(this, 'business')">Business</div>
+            </div>
+
+            <div class="social-btns">
+                <div class="social-btn">🍎 Apple</div>
+                <div class="social-btn">G Google</div>
+            </div>
+
+            <div class="divider"><hr><span>or continue with email</span><hr></div>
+
+            <div class="form-group">
+                <label class="form-label">Email or Phone</label>
+                <input type="text" class="input-field" placeholder="you@email.com or (210) 555-1234">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="input-field" placeholder="••••••••">
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <div class="checkbox-row" style="margin-bottom: 0;">
+                    <div class="cb checked" onclick="this.classList.toggle('checked')">✓</div>
+                    <span class="cb-text">Remember me</span>
+                </div>
+                <a href="#" style="font-size: 0.8rem; color: #7b2ff7; text-decoration: none;">Forgot password?</a>
+            </div>
+
+            <button class="btn-primary">Log In</button>
+        </div>
+
+        <div class="auth-link">
+            Don't have an account? <a href="#">Sign up free</a>
+        </div>
+
+        <div class="security-badge">
+            <span class="shield">🔒</span> 256-bit encrypted · FDIC insured funds · SOC 2 compliant
+        </div>
+    </div>
+</div>
+
+<!-- ========== SCREEN 2: SIGN UP ========== -->
+<div class="section-divider"><h3>Screen 2 — Sign Up (Affiliate)</h3></div>
+
+<div class="auth-container" style="padding-top: 10px;">
+    <div class="auth-box">
+        <div class="auth-card">
+            <h2>Create Your Account</h2>
+            <div class="sub">Start earning in minutes. It's free.</div>
+
+            <div class="social-btns">
+                <div class="social-btn">🍎 Apple</div>
+                <div class="social-btn">G Google</div>
+            </div>
+
+            <div class="divider"><hr><span>or sign up with email</span><hr></div>
+
+            <div class="input-row">
+                <div class="form-group" style="flex:1">
+                    <label class="form-label">First Name</label>
+                    <input type="text" class="input-field" placeholder="Maria">
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" class="input-field" placeholder="Rodriguez">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="input-field" placeholder="maria@email.com">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="input-field" placeholder="(210) 555-1234">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Create Password</label>
+                <input type="password" class="input-field" placeholder="Min 8 chars, upper + lower + number" oninput="updateStrength(this.value)">
+                <div class="pw-strength">
+                    <div class="pw-bar"><div class="pw-fill" id="pwFill" style="width: 0%; background: #f87171;"></div></div>
+                    <div class="pw-label" id="pwLabel" style="color: #6b7280;">Enter a password</div>
+                </div>
+            </div>
+
+            <div class="checkbox-row">
+                <div class="cb" onclick="this.classList.toggle('checked')"></div>
+                <div class="cb-text">I agree to the <a href="#">Terms of Service</a>, <a href="#">Privacy Policy</a>, and <a href="#">Affiliate Agreement</a></div>
+            </div>
+
+            <button class="btn-primary">Create Account →</button>
+        </div>
+
+        <div class="auth-link">
+            Already have an account? <a href="#">Log in</a>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SCREEN 3: EMAIL VERIFICATION ========== -->
+<div class="section-divider"><h3>Screen 3 — Email Verification</h3></div>
+
+<div class="auth-container" style="padding-top: 10px;">
+    <div class="auth-box">
+        <div class="twofa-card">
+            <div class="twofa-icon">📧</div>
+            <h2>Verify Your Email</h2>
+            <div class="sub">We sent a 6-digit code to <strong style="color:#e0e0e0">maria@email.com</strong></div>
+
+            <div class="code-inputs">
+                <input type="text" class="code-input filled" value="4" maxlength="1">
+                <input type="text" class="code-input filled" value="7" maxlength="1">
+                <input type="text" class="code-input filled" value="2" maxlength="1">
+                <input type="text" class="code-input" maxlength="1">
+                <input type="text" class="code-input" maxlength="1">
+                <input type="text" class="code-input" maxlength="1">
+            </div>
+
+            <button class="btn-primary" style="max-width: 200px; margin: 0 auto; display: block;">Verify →</button>
+
+            <div class="resend-link">
+                Didn't receive it? <a href="#">Resend code</a> · <a href="#">Try a different email</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SCREEN 4: 2FA SETUP ========== -->
+<div class="section-divider"><h3>Screen 4 — Two-Factor Authentication</h3></div>
+
+<div class="auth-container" style="padding-top: 10px;">
+    <div class="auth-box">
+        <div class="twofa-card">
+            <div class="twofa-icon">🔐</div>
+            <h2>Secure Your Account</h2>
+            <div class="sub">Two-factor authentication is <strong style="color:#22c55e">required</strong> to protect your earnings.</div>
+
+            <div class="twofa-method">
+                <div class="method-btn active">📱 Text Message</div>
+                <div class="method-btn">🔑 Authenticator App</div>
+            </div>
+
+            <div class="form-group" style="text-align: left; max-width: 300px; margin: 0 auto 16px;">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="input-field" value="(210) 555-1234" style="text-align: center;">
+            </div>
+
+            <button class="btn-primary" style="max-width: 240px; margin: 0 auto; display: block;">Send Verification Code →</button>
+
+            <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #2a2a3a;">
+                <div class="sub" style="margin-bottom: 12px;">Enter the 6-digit code sent to your phone:</div>
+                <div class="code-inputs">
+                    <input type="text" class="code-input" maxlength="1">
+                    <input type="text" class="code-input" maxlength="1">
+                    <input type="text" class="code-input" maxlength="1">
+                    <input type="text" class="code-input" maxlength="1">
+                    <input type="text" class="code-input" maxlength="1">
+                    <input type="text" class="code-input" maxlength="1">
+                </div>
+                <button class="btn-primary green" style="max-width: 200px; margin: 0 auto; display: block;">Confirm 2FA ✓</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SCREEN 5: CASH-OUT PIN ========== -->
+<div class="section-divider"><h3>Screen 5 — Cash-Out PIN Setup</h3></div>
+
+<div class="auth-container" style="padding-top: 10px;">
+    <div class="auth-box">
+        <div class="pin-card">
+            <div class="twofa-icon">💰</div>
+            <h2>Create Your Cash-Out PIN</h2>
+            <div class="sub">This 4-digit PIN is required whenever you transfer money out of Paid2Say. Keep it secret.</div>
+
+            <div class="pin-dots">
+                <div class="pin-dot filled"></div>
+                <div class="pin-dot filled"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+            </div>
+
+            <div class="pin-keypad">
+                <div class="pin-key">1</div>
+                <div class="pin-key">2</div>
+                <div class="pin-key">3</div>
+                <div class="pin-key">4</div>
+                <div class="pin-key">5</div>
+                <div class="pin-key">6</div>
+                <div class="pin-key">7</div>
+                <div class="pin-key">8</div>
+                <div class="pin-key">9</div>
+                <div class="pin-key empty"></div>
+                <div class="pin-key">0</div>
+                <div class="pin-key delete">⌫</div>
+            </div>
+
+            <div class="ssn-note" style="margin-top: 20px;">
+                <span class="note-icon">🔒</span>
+                <p>Your PIN is encrypted and never stored in plain text. Even Paid2Say employees cannot see it.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SCREEN 6: KYC ========== -->
+<div class="section-divider"><h3>Screen 6 — Identity Verification (KYC)</h3></div>
+
+<div class="auth-container" style="padding-top: 10px;">
+    <div class="auth-box">
+        <div class="kyc-card">
+            <h2>Verify Your Identity</h2>
+            <div class="sub">Required by federal law to process payments. Takes 2 minutes.</div>
+
+            <div class="kyc-steps">
+                <div class="kyc-step">
+                    <div class="step-num done">✓</div>
+                    <div class="step-label">Account</div>
+                </div>
+                <div class="kyc-step">
+                    <div class="step-num done">✓</div>
+                    <div class="step-label">Email</div>
+                </div>
+                <div class="kyc-step">
+                    <div class="step-num done">✓</div>
+                    <div class="step-label">2FA</div>
+                </div>
+                <div class="kyc-step">
+                    <div class="step-num current">4</div>
+                    <div class="step-label active">Identity</div>
+                </div>
+                <div class="kyc-step">
+                    <div class="step-num pending">5</div>
+                    <div class="step-label">Done</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Legal Full Name</label>
+                <input type="text" class="input-field" placeholder="As it appears on your ID">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Date of Birth</label>
+                <input type="date" class="input-field">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Address</label>
+                <input type="text" class="input-field" placeholder="Street address" style="margin-bottom: 8px;">
+                <div class="input-row">
+                    <input type="text" class="input-field" placeholder="City" style="flex:2">
+                    <input type="text" class="input-field" placeholder="State" style="flex:1">
+                    <input type="text" class="input-field" placeholder="ZIP" style="flex:1">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Last 4 of SSN</label>
+                <input type="text" class="input-field" placeholder="••••" maxlength="4" style="max-width: 120px; text-align: center; letter-spacing: 8px;">
+            </div>
+
+            <div class="ssn-note">
+                <span class="note-icon">🔒</span>
+                <p><strong>Why do we need this?</strong> Federal law (IRS) requires identity verification for anyone earning over $600/year. Your SSN is encrypted with bank-grade AES-256 encryption and only used for 1099-NEC tax reporting. We never sell or share your personal data.</p>
+            </div>
+
+            <button class="btn-primary green" style="margin-top: 20px;">Verify & Continue →</button>
+        </div>
+
+        <div class="security-badge">
+            <span class="shield">🔒</span> AES-256 encrypted · PCI DSS compliant · Data never sold
+        </div>
+    </div>
+</div>
+
+<!-- ========== SCREEN 7: 2FA LOGIN CHALLENGE ========== -->
+<div class="section-divider"><h3>Screen 7 — 2FA Login Challenge (Returning User)</h3></div>
+
+<div class="auth-container" style="padding-top: 10px;">
+    <div class="auth-box">
+        <div class="twofa-card">
+            <div class="twofa-icon">🔐</div>
+            <h2>Two-Factor Check</h2>
+            <div class="sub">We sent a code to <strong style="color:#e0e0e0">(210) •••-1234</strong></div>
+
+            <div class="code-inputs">
+                <input type="text" class="code-input filled" value="8" maxlength="1">
+                <input type="text" class="code-input filled" value="3" maxlength="1">
+                <input type="text" class="code-input filled" value="9" maxlength="1">
+                <input type="text" class="code-input filled" value="2" maxlength="1">
+                <input type="text" class="code-input filled" value="1" maxlength="1">
+                <input type="text" class="code-input" maxlength="1" placeholder="_">
+            </div>
+
+            <button class="btn-primary" style="max-width: 200px; margin: 0 auto; display: block;">Verify →</button>
+
+            <div class="resend-link">
+                <a href="#">Resend code</a> · <a href="#">Use authenticator app instead</a>
+            </div>
+
+            <div style="margin-top: 16px;">
+                <div class="checkbox-row" style="justify-content: center;">
+                    <div class="cb" onclick="this.classList.toggle('checked')"></div>
+                    <span class="cb-text">Trust this device for 30 days</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    PAID2SAY — Secure Login Flow Mockup · Internal · v0.1<br>
+    <span style="color: #2a2a3a;">Built with 🐺</span>
+</footer>
+
+<script>
+    function switchTab(el, type) {
+        el.parentElement.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function updateStrength(pw) {
+        const fill = document.getElementById('pwFill');
+        const label = document.getElementById('pwLabel');
+        let score = 0;
+        if (pw.length >= 8) score++;
+        if (/[A-Z]/.test(pw)) score++;
+        if (/[a-z]/.test(pw)) score++;
+        if (/[0-9]/.test(pw)) score++;
+        if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+        const levels = [
+            { width: '0%', color: '#f87171', text: 'Enter a password' },
+            { width: '20%', color: '#f87171', text: 'Weak' },
+            { width: '40%', color: '#fbbf24', text: 'Fair' },
+            { width: '60%', color: '#fbbf24', text: 'Good' },
+            { width: '80%', color: '#22c55e', text: 'Strong' },
+            { width: '100%', color: '#22c55e', text: 'Very Strong ✓' },
+        ];
+
+        fill.style.width = levels[score].width;
+        fill.style.background = levels[score].color;
+        label.textContent = levels[score].text;
+        label.style.color = levels[score].color;
+    }
+</script>
+
+</body>
+</html>
