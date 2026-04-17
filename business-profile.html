@@ -243,7 +243,8 @@
     </div>
     <div class="comm-note">Commission rates visible to registered affiliates only</div>
 
-    <!-- Active Deals -->
+    <!-- Active Deals (moved to deals tab too, keeping here for main view) -->
+    <div id="biz-deals-main">
     <div class="section-title">🎟️ Active Deals</div>
     <div class="deal-card">
         <div class="deal-top">
@@ -264,15 +265,103 @@
         <div class="deal-btn" style="background:#22c55e;">Claim Deal</div>
     </div>
 
-    <!-- Gallery -->
-    <div class="section-title">📸 Gallery</div>
-    <div class="gallery-grid">
-        <div class="gallery-item" style="background:linear-gradient(135deg,#1e1b4b,#2a1a3e);">Japanese sleeve</div>
-        <div class="gallery-item" style="background:linear-gradient(135deg,#14532d,#1a2e1a);">Neo trad rose</div>
-        <div class="gallery-item" style="background:linear-gradient(135deg,#422006,#2e1a0a);">Blackwork geo</div>
+    <!-- Team / Artists -->
+    <div class="section-title">🎨 Our Team</div>
+    <div style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 16px;-webkit-overflow-scrolling:touch;">
+        <div style="flex-shrink:0;text-align:center;cursor:pointer;" onclick="alert('Noah\'s profile (mockup)')">
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#7b2ff7,#00d4ff);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:white;margin:0 auto 6px;border:2px solid #ffd700;">NY</div>
+            <div style="font-size:0.75rem;font-weight:600;">Noah Y.</div>
+            <div style="font-size:0.6rem;color:#ffd700;">CEO / Piercer</div>
+        </div>
+        <div style="flex-shrink:0;text-align:center;cursor:pointer;">
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#ef4444);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:white;margin:0 auto 6px;">WP</div>
+            <div style="font-size:0.75rem;font-weight:600;">Wasabi</div>
+            <div style="font-size:0.6rem;color:#6b7280;">Piercer</div>
+        </div>
+        <div style="flex-shrink:0;text-align:center;cursor:pointer;">
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:white;margin:0 auto 6px;">JR</div>
+            <div style="font-size:0.75rem;font-weight:600;">Jake R.</div>
+            <div style="font-size:0.6rem;color:#6b7280;">Artist</div>
+        </div>
+        <div style="flex-shrink:0;text-align:center;cursor:pointer;">
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#a78bfa,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:white;margin:0 auto 6px;">MT</div>
+            <div style="font-size:0.75rem;font-weight:600;">Mike T.</div>
+            <div style="font-size:0.6rem;color:#6b7280;">Artist</div>
+        </div>
+        <div style="flex-shrink:0;text-align:center;cursor:pointer;">
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#ec4899,#f43f5e);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:white;margin:0 auto 6px;">LS</div>
+            <div style="font-size:0.75rem;font-weight:600;">Lisa S.</div>
+            <div style="font-size:0.6rem;color:#6b7280;">Artist</div>
+        </div>
+        <div style="flex-shrink:0;text-align:center;cursor:pointer;">
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#f97316,#dc2626);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:white;margin:0 auto 6px;">DC</div>
+            <div style="font-size:0.75rem;font-weight:600;">Danny C.</div>
+            <div style="font-size:0.6rem;color:#6b7280;">Artist</div>
+        </div>
+        <div style="flex-shrink:0;text-align:center;cursor:pointer;">
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#06b6d4,#0284c7);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:white;margin:0 auto 6px;">RV</div>
+            <div style="font-size:0.75rem;font-weight:600;">Rico V.</div>
+            <div style="font-size:0.6rem;color:#6b7280;">Artist</div>
+        </div>
+    </div>
+
+    <!-- Content Tabs (IG style) -->
+    <div style="display:flex;border-bottom:1px solid #1e1e2e;position:sticky;top:52px;background:#0a0a0f;z-index:10;">
+        <div class="content-tab active" onclick="switchBizTab('posts',this)" style="flex:1;text-align:center;padding:12px 0;font-size:0.85rem;font-weight:600;color:#00d4ff;cursor:pointer;border-bottom:2px solid #00d4ff;">📷 Posts</div>
+        <div class="content-tab" onclick="switchBizTab('reels',this)" style="flex:1;text-align:center;padding:12px 0;font-size:0.85rem;font-weight:600;color:#6b7280;cursor:pointer;border-bottom:2px solid transparent;">🎬 Reels</div>
+        <div class="content-tab" onclick="switchBizTab('deals',this)" style="flex:1;text-align:center;padding:12px 0;font-size:0.85rem;font-weight:600;color:#6b7280;cursor:pointer;border-bottom:2px solid transparent;">🎟️ Deals</div>
+        <div class="content-tab" onclick="switchBizTab('tagged',this)" style="flex:1;text-align:center;padding:12px 0;font-size:0.85rem;font-weight:600;color:#6b7280;cursor:pointer;border-bottom:2px solid transparent;">🏷️ Tagged</div>
+    </div>
+
+    <!-- Posts Grid (IG style) -->
+    <div id="biz-posts" class="gallery-grid" style="margin:0;border-radius:0;">
+        <div class="gallery-item" style="background:linear-gradient(135deg,#1e1b4b,#2a1a3e);">🎨 Japanese sleeve</div>
+        <div class="gallery-item" style="background:linear-gradient(135deg,#14532d,#1a2e1a);">🌹 Neo trad rose</div>
+        <div class="gallery-item" style="background:linear-gradient(135deg,#422006,#2e1a0a);">◼️ Blackwork geo</div>
         <div class="gallery-item" style="background:linear-gradient(135deg,#450a0a,#2e0a0a);">Septum piercing</div>
         <div class="gallery-item" style="background:linear-gradient(135deg,#1a1a2e,#0f172a);">Full back piece</div>
         <div class="gallery-item" style="background:linear-gradient(135deg,#1e1b4b,#0f0d2e);">Studio interior</div>
+        <div class="gallery-item" style="background:linear-gradient(135deg,#422006,#1a0f00);">Color realism</div>
+        <div class="gallery-item" style="background:linear-gradient(135deg,#14532d,#0a1a0f);">Helix piercing</div>
+        <div class="gallery-item" style="background:linear-gradient(135deg,#450a0a,#1a0505);">Watercolor tat</div>
+        <div class="gallery-item" style="background:linear-gradient(135deg,#1e1b4b,#100d2e);">Micro realism</div>
+        <div class="gallery-item" style="background:linear-gradient(135deg,#0f172a,#1a1a2e);">Lettering</div>
+        <div class="gallery-item" style="background:linear-gradient(135deg,#422006,#2e1a0a);">Cover-up</div>
+    </div>
+
+    <!-- Reels Grid -->
+    <div id="biz-reels" style="display:none;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;">
+            <div style="aspect-ratio:9/16;background:linear-gradient(135deg,#1e1b4b,#2a1a3e);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:0.7rem;color:#6b7280;cursor:pointer;position:relative;">
+                <div style="font-size:1.5rem;margin-bottom:4px;">🎬</div>Sleeve timelapse
+                <div style="position:absolute;bottom:6px;left:6px;font-size:0.6rem;color:white;">▶ 12.4K</div>
+            </div>
+            <div style="aspect-ratio:9/16;background:linear-gradient(135deg,#450a0a,#2e0a0a);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:0.7rem;color:#6b7280;cursor:pointer;position:relative;">
+                <div style="font-size:1.5rem;margin-bottom:4px;">🎬</div>Piercing day
+                <div style="position:absolute;bottom:6px;left:6px;font-size:0.6rem;color:white;">▶ 8.7K</div>
+            </div>
+            <div style="aspect-ratio:9/16;background:linear-gradient(135deg,#14532d,#1a2e1a);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:0.7rem;color:#6b7280;cursor:pointer;position:relative;">
+                <div style="font-size:1.5rem;margin-bottom:4px;">🎬</div>Studio tour
+                <div style="position:absolute;bottom:6px;left:6px;font-size:0.6rem;color:white;">▶ 5.2K</div>
+            </div>
+            <div style="aspect-ratio:9/16;background:linear-gradient(135deg,#422006,#2e1a0a);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:0.7rem;color:#6b7280;cursor:pointer;position:relative;">
+                <div style="font-size:1.5rem;margin-bottom:4px;">🎬</div>Before & after
+                <div style="position:absolute;bottom:6px;left:6px;font-size:0.6rem;color:white;">▶ 15.1K</div>
+            </div>
+            <div style="aspect-ratio:9/16;background:linear-gradient(135deg,#1a1a2e,#0f172a);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:0.7rem;color:#6b7280;cursor:pointer;position:relative;">
+                <div style="font-size:1.5rem;margin-bottom:4px;">🎬</div>Aftercare tips
+                <div style="position:absolute;bottom:6px;left:6px;font-size:0.6rem;color:white;">▶ 3.8K</div>
+            </div>
+            <div style="aspect-ratio:9/16;background:linear-gradient(135deg,#1e1b4b,#0f0d2e);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:0.7rem;color:#6b7280;cursor:pointer;position:relative;">
+                <div style="font-size:1.5rem;margin-bottom:4px;">🎬</div>Artist spotlight
+                <div style="position:absolute;bottom:6px;left:6px;font-size:0.6rem;color:white;">▶ 6.3K</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deals Tab -->
+    <div id="biz-deals" style="display:none;padding:16px 0;">
+
     </div>
 
     <!-- Business Info -->
@@ -375,6 +464,49 @@
         <a href="affiliate-profile.html" class="bnav-item"><div class="bnav-icon">👤</div><div class="bnav-label">Profile</div></a>
     </div>
 </div>
+
+<!-- Tagged Tab -->
+<div id="biz-tagged" style="display:none;">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;">
+        <div style="aspect-ratio:1;background:linear-gradient(135deg,#14532d,#1a2e1a);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:0.65rem;color:#6b7280;cursor:pointer;padding:8px;text-align:center;">@maria_ref<br>tagged Platinum</div>
+        <div style="aspect-ratio:1;background:linear-gradient(135deg,#1e1b4b,#2a1a3e);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:0.65rem;color:#6b7280;cursor:pointer;padding:8px;text-align:center;">@jake_tattoo<br>sleeve review</div>
+        <div style="aspect-ratio:1;background:linear-gradient(135deg,#422006,#2e1a0a);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:0.65rem;color:#6b7280;cursor:pointer;padding:8px;text-align:center;">@lisa_ink<br>piercing day</div>
+        <div style="aspect-ratio:1;background:linear-gradient(135deg,#450a0a,#2e0a0a);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:0.65rem;color:#6b7280;cursor:pointer;padding:8px;text-align:center;">@carlos_fit<br>first tattoo</div>
+        <div style="aspect-ratio:1;background:linear-gradient(135deg,#1a1a2e,#0f172a);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:0.65rem;color:#6b7280;cursor:pointer;padding:8px;text-align:center;">@tommy_sa<br>cover-up done</div>
+        <div style="aspect-ratio:1;background:linear-gradient(135deg,#0f172a,#1e1b4b);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:0.65rem;color:#6b7280;cursor:pointer;padding:8px;text-align:center;">@ana_wellness<br>matching tats</div>
+    </div>
+</div>
+
+<script>
+function switchBizTab(tab, el) {
+    // Reset all tabs
+    document.querySelectorAll('[onclick^="switchBizTab"]').forEach(t => {
+        t.style.color = '#6b7280';
+        t.style.borderBottomColor = 'transparent';
+    });
+    el.style.color = '#00d4ff';
+    el.style.borderBottomColor = '#00d4ff';
+
+    // Hide all content
+    document.getElementById('biz-posts').style.display = 'none';
+    document.getElementById('biz-reels').style.display = 'none';
+    document.getElementById('biz-deals').style.display = 'none';
+    document.getElementById('biz-tagged').style.display = 'none';
+    document.getElementById('biz-deals-main').style.display = 'none';
+
+    // Show selected
+    if (tab === 'posts') {
+        document.getElementById('biz-posts').style.display = 'grid';
+    } else if (tab === 'reels') {
+        document.getElementById('biz-reels').style.display = 'block';
+    } else if (tab === 'deals') {
+        document.getElementById('biz-deals').style.display = 'block';
+        document.getElementById('biz-deals-main').style.display = 'block';
+    } else if (tab === 'tagged') {
+        document.getElementById('biz-tagged').style.display = 'block';
+    }
+}
+</script>
 
 </body>
 </html>
