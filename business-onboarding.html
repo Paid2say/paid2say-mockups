@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paid2Say — Business Onboarding</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 24px; border-bottom: 1px solid #1e1e2e;
+        }
+        .top-logo {
+            font-size: 1.2rem; font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .save-exit { font-size: 0.82rem; color: #6b7280; cursor: pointer; }
+        .save-exit:hover { color: #e0e0e0; }
+
+        /* Progress Bar */
+        .progress-container {
+            padding: 20px 24px 0;
+            max-width: 600px; margin: 0 auto;
+        }
+        .progress-steps {
+            display: flex; justify-content: space-between; margin-bottom: 8px;
+        }
+        .progress-step {
+            font-size: 0.7rem; color: #4b5563; text-align: center; flex: 1;
+            transition: color 0.3s;
+        }
+        .progress-step.active { color: #00d4ff; font-weight: 600; }
+        .progress-step.done { color: #22c55e; }
+        .progress-bar {
+            height: 4px; background: #2a2a3a; border-radius: 2px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; border-radius: 2px;
+            background: linear-gradient(90deg, #7b2ff7, #00d4ff);
+            transition: width 0.5s ease;
+        }
+
+        /* Step Container */
+        .steps-wrapper {
+            max-width: 500px; margin: 0 auto; padding: 40px 24px 100px;
+            position: relative;
+        }
+        .step {
+            display: none;
+            animation: fadeSlideIn 0.4s ease forwards;
+        }
+        .step.active { display: block; }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeSlideOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(-30px); }
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.15); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(400px) rotate(720deg); opacity: 0; }
+        }
+
+        /* Step Header */
+        .step-icon {
+            font-size: 3rem; text-align: center; margin-bottom: 16px;
+            animation: popIn 0.5s ease 0.1s both;
+        }
+        .step h2 {
+            font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 8px;
+        }
+        .step .step-sub {
+            font-size: 0.9rem; color: #6b7280; text-align: center; margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        /* Form Elements */
+        .form-group { margin-bottom: 20px; }
+        .form-label { font-size: 0.83rem; font-weight: 600; margin-bottom: 6px; display: block; }
+        .form-hint { font-size: 0.73rem; color: #6b7280; margin-top: 4px; }
+        .input-field {
+            width: 100%; background: #12121a; border: 1px solid #2a2a3a; border-radius: 10px;
+            padding: 14px 16px; color: #e0e0e0; font-size: 0.9rem; outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-field:focus { border-color: #7b2ff7; }
+        .input-field::placeholder { color: #4b5563; }
+
+        select.input-field {
+            appearance: none; -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 14px center;
+            padding-right: 36px; cursor: pointer;
+        }
+
+        .input-row { display: flex; gap: 10px; }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed #2a2a3a; border-radius: 12px; padding: 30px;
+            text-align: center; cursor: pointer; transition: all 0.2s;
+        }
+        .upload-area:hover { border-color: #7b2ff7; background: #12121a; }
+        .upload-area .upload-icon { font-size: 2rem; margin-bottom: 8px; }
+        .upload-area p { font-size: 0.82rem; color: #6b7280; }
+        .upload-area .upload-link { color: #7b2ff7; font-weight: 600; }
+
+        /* Commission Type Cards */
+        .type-cards { display: flex; gap: 12px; margin-bottom: 20px; }
+        .type-card {
+            flex: 1; background: #12121a; border: 2px solid #2a2a3a; border-radius: 12px;
+            padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s;
+        }
+        .type-card:hover { border-color: #3a3a5a; }
+        .type-card.selected { border-color: #7b2ff7; background: #1e1b4b; }
+        .type-card .tc-icon { font-size: 1.8rem; margin-bottom: 8px; }
+        .type-card .tc-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+        .type-card .tc-desc { font-size: 0.73rem; color: #6b7280; }
+
+        /* Rate Display */
+        .rate-display {
+            text-align: center; margin: 16px 0;
+        }
+        .rate-big {
+            font-size: 3rem; font-weight: 800; color: #00d4ff;
+            transition: color 0.2s;
+        }
+        .rate-per { font-size: 0.85rem; color: #6b7280; }
+
+        input[type="range"] {
+            -webkit-appearance: none; width: 100%; height: 8px;
+            background: #2a2a3a; border-radius: 4px; outline: none; margin: 12px 0;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 24px; height: 24px;
+            border-radius: 50%; background: white; cursor: grab;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        /* Wallet Visual */
+        .wallet-visual {
+            background: linear-gradient(135deg, #0f172a, #1a1a2e);
+            border: 1px solid #22c55e33; border-radius: 14px;
+            padding: 24px; text-align: center; margin-bottom: 20px;
+        }
+        .wallet-amount {
+            font-size: 2.5rem; font-weight: 800; color: #22c55e; margin: 8px 0;
+        }
+        .wallet-info { font-size: 0.8rem; color: #8892a4; }
+
+        /* Bank Connect */
+        .bank-connect {
+            background: #12121a; border: 1px solid #2a2a3a; border-radius: 12px;
+            padding: 20px; display: flex; align-items: center; gap: 16px;
+            cursor: pointer; transition: border-color 0.2s;
+        }
+        .bank-connect:hover { border-color: #7b2ff7; }
+        .bank-connect .bc-icon { font-size: 2rem; }
+        .bank-connect .bc-text h4 { font-size: 0.9rem; margin-bottom: 2px; }
+        .bank-connect .bc-text p { font-size: 0.78rem; color: #6b7280; }
+        .bank-connect .bc-arrow { margin-left: auto; color: #7b2ff7; font-size: 1.2rem; }
+
+        /* QR Code Area */
+        .qr-area {
+            text-align: center; margin: 20px 0;
+        }
+        .qr-box {
+            width: 180px; height: 180px; background: white; border-radius: 12px;
+            margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; color: #333;
+        }
+        .share-link-box {
+            background: #12121a; border: 1px solid #2a2a3a; border-radius: 10px;
+            padding: 12px 16px; display: flex; align-items: center; justify-content: space-between;
+            margin: 12px 0;
+        }
+        .share-link-text { font-size: 0.82rem; color: #8892a4; overflow: hidden; text-overflow: ellipsis; }
+        .share-copy-btn {
+            background: #7b2ff7; color: white; padding: 6px 14px; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 600; cursor: pointer; border: none; flex-shrink: 0; margin-left: 8px;
+        }
+        .share-methods {
+            display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 12px 0;
+        }
+        .share-method {
+            padding: 8px 14px; border-radius: 8px; font-size: 0.78rem;
+            background: #1a1a2e; border: 1px solid #2a2a3a; cursor: pointer; color: #8892a4;
+        }
+
+        /* Completion */
+        .confetti-container {
+            position: fixed; top: 0; left: 0; right: 0; pointer-events: none; z-index: 999;
+            overflow: hidden; height: 100vh;
+        }
+        .confetti-piece {
+            position: absolute; width: 10px; height: 10px; border-radius: 2px;
+            animation: confetti 3s ease-out forwards;
+        }
+        .success-checkmark {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; margin: 0 auto 20px;
+            animation: popIn 0.6s ease both;
+        }
+        .dashboard-preview {
+            background: #12121a; border: 1px solid #2a2a3a; border-radius: 14px;
+            padding: 20px; margin-top: 20px;
+        }
+        .dp-row {
+            display: flex; justify-content: space-between; padding: 10px 0;
+            border-bottom: 1px solid #1e1e2e; font-size: 0.85rem;
+        }
+        .dp-row:last-child { border-bottom: none; }
+        .dp-label { color: #8892a4; }
+        .dp-value { font-weight: 600; }
+
+        /* Buttons */
+        .btn-row {
+            display: flex; gap: 12px; margin-top: 30px;
+        }
+        .btn-next {
+            flex: 1; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 0.95rem;
+            border: none; cursor: pointer; transition: transform 0.2s;
+            background: linear-gradient(135deg, #7b2ff7, #5b1fd7); color: white;
+        }
+        .btn-next:hover { transform: scale(1.02); }
+        .btn-next.green { background: linear-gradient(135deg, #22c55e, #16a34a); }
+        .btn-back {
+            padding: 14px 24px; border-radius: 10px; font-weight: 600; font-size: 0.9rem;
+            background: transparent; border: 1px solid #3a3a5a; color: #8892a4;
+            cursor: pointer;
+        }
+
+        /* Tip Box */
+        .tip-box {
+            background: #14532d22; border: 1px solid #22c55e33; border-radius: 10px;
+            padding: 14px; display: flex; gap: 10px; align-items: flex-start; margin-top: 16px;
+        }
+        .tip-box .tip-icon { font-size: 1rem; }
+        .tip-box p { font-size: 0.78rem; color: #86efac; line-height: 1.4; }
+
+        @media (max-width: 500px) {
+            .steps-wrapper { padding: 24px 16px 100px; }
+            .type-cards { flex-direction: column; }
+            .rate-big { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+    <div class="top-logo">Paid2Say</div>
+    <div class="save-exit" onclick="alert('Progress saved! (mockup)')">Save & Exit</div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-container">
+    <div class="progress-steps">
+        <div class="progress-step active" id="ps-1">Business</div>
+        <div class="progress-step" id="ps-2">Commission</div>
+        <div class="progress-step" id="ps-3">Wallet</div>
+        <div class="progress-step" id="ps-4">Invite</div>
+        <div class="progress-step" id="ps-5">Done!</div>
+    </div>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 10%;"></div>
+    </div>
+</div>
+
+<!-- STEPS -->
+<div class="steps-wrapper">
+
+    <!-- STEP 1: Business Info -->
+    <div class="step active" id="step-1">
+        <div class="step-icon">🏪</div>
+        <h2>Tell Us About Your Business</h2>
+        <p class="step-sub">This takes about 2 minutes. You can always change these later.</p>
+
+        <div class="form-group">
+            <label class="form-label">Business Name</label>
+            <input type="text" class="input-field" placeholder="e.g. Platinum Tattoos & Piercings">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="input-field">
+                <option value="">Select your industry...</option>
+                <option>☕ Food & Beverage</option>
+                <option>🍽️ Restaurant / Bar</option>
+                <option>💇 Beauty / Salon / Barber</option>
+                <option selected>🎨 Tattoo / Piercing / Body Art</option>
+                <option>🔧 Auto Repair / Detailing</option>
+                <option>🏥 Health / Med Spa / Dental</option>
+                <option>💪 Fitness / Gym</option>
+                <option>🏠 Home Services / Contractor</option>
+                <option>🏘️ Real Estate</option>
+                <option>🚗 Auto Sales</option>
+                <option>🏢 Apartments / Leasing</option>
+                <option>⚖️ Legal / Financial</option>
+                <option>🛍️ Retail / Boutique</option>
+                <option>📦 Other</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Location</label>
+            <input type="text" class="input-field" placeholder="Street address" style="margin-bottom: 8px;">
+            <div class="input-row">
+                <input type="text" class="input-field" placeholder="City" style="flex:2">
+                <input type="text" class="input-field" placeholder="State" style="flex:1">
+                <input type="text" class="input-field" placeholder="ZIP" style="flex:1">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="tel" class="input-field" placeholder="(210) 555-1234">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Logo (optional)</label>
+            <div class="upload-area">
+                <div class="upload-icon">📷</div>
+                <p>Drag & drop or <span class="upload-link">browse</span></p>
+                <p style="font-size:0.7rem; margin-top:4px;">PNG, JPG up to 5MB</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Average Ticket Size</label>
+            <input type="number" class="input-field" placeholder="What does an average customer spend? e.g. 200" id="avgTicketInput">
+            <div class="form-hint">This helps us suggest the right commission rate.</div>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn-next" onclick="goToStep(2)">Continue →</button>
+        </div>
+    </div>
+
+    <!-- STEP 2: Commission Setup -->
+    <div class="step" id="step-2">
+        <div class="step-icon">💰</div>
+        <h2>Set Your Commission</h2>
+        <p class="step-sub">This is what you'll pay affiliates for every customer they send you.</p>
+
+        <div class="type-cards">
+            <div class="type-card selected" onclick="selectCommType('pct', this)">
+                <div class="tc-icon">📊</div>
+                <div class="tc-name">Percentage</div>
+                <div class="tc-desc">% of each sale</div>
+            </div>
+            <div class="type-card" onclick="selectCommType('flat', this)">
+                <div class="tc-icon">💵</div>
+                <div class="tc-name">Flat Amount</div>
+                <div class="tc-desc">Fixed $ per referral</div>
+            </div>
+        </div>
+
+        <div id="pct-config">
+            <div class="rate-display">
+                <div class="rate-big" id="rateValue">10%</div>
+                <div class="rate-per">per referred sale</div>
+            </div>
+            <input type="range" min="1" max="25" value="10" id="rateSlider" oninput="updateOnboardRate()">
+            <div style="display:flex; justify-content:space-between; font-size:0.73rem; color:#4b5563;">
+                <span>1%</span><span>5%</span><span>10%</span><span>15%</span><span>20%</span><span>25%</span>
+            </div>
+        </div>
+
+        <div id="flat-config" style="display:none;">
+            <div class="rate-display">
+                <div class="rate-big" id="flatValue" style="color:#22c55e;">$20</div>
+                <div class="rate-per">per referral</div>
+            </div>
+            <input type="range" min="2" max="500" value="20" id="flatSlider" oninput="updateOnboardFlat()">
+            <div style="display:flex; justify-content:space-between; font-size:0.73rem; color:#4b5563;">
+                <span>$2</span><span>$25</span><span>$100</span><span>$250</span><span>$500</span>
+            </div>
+        </div>
+
+        <div class="tip-box">
+            <span class="tip-icon">💡</span>
+            <p><strong>Suggested rate for your category:</strong> Most tattoo & piercing shops offer 10-15%. Higher rates attract more affiliates from the marketplace.</p>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn-back" onclick="goToStep(1)">← Back</button>
+            <button class="btn-next" onclick="goToStep(3)">Continue →</button>
+        </div>
+    </div>
+
+    <!-- STEP 3: Fund Wallet -->
+    <div class="step" id="step-3">
+        <div class="step-icon">💳</div>
+        <h2>Fund Your Wallet</h2>
+        <p class="step-sub">Pre-load your commission wallet so affiliates get paid instantly when they deliver results.</p>
+
+        <div class="wallet-visual">
+            <div style="font-size:0.8rem; color:#8892a4;">Initial Wallet Load</div>
+            <div class="wallet-amount" id="walletDisplay">$200</div>
+            <div class="wallet-info">Covers ~10 referrals at your current rate</div>
+        </div>
+
+        <input type="range" min="50" max="1000" step="50" value="200" id="walletSlider" oninput="updateOnboardWallet()">
+        <div style="display:flex; justify-content:space-between; font-size:0.73rem; color:#4b5563; margin-bottom: 20px;">
+            <span>$50</span><span>$250</span><span>$500</span><span>$750</span><span>$1,000</span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Connect Your Bank (ACH)</label>
+            <div class="bank-connect" onclick="alert('Plaid bank connection (mockup)')">
+                <div class="bc-icon">🏦</div>
+                <div class="bc-text">
+                    <h4>Connect with Plaid</h4>
+                    <p>Securely link your business bank account for wallet loads and $49/mo subscription.</p>
+                </div>
+                <div class="bc-arrow">→</div>
+            </div>
+            <div class="form-hint">256-bit encrypted. Paid2Say never stores your full account number.</div>
+        </div>
+
+        <div class="tip-box">
+            <span class="tip-icon">🔄</span>
+            <p><strong>Auto-recharge enabled:</strong> When your wallet drops below 25%, we'll automatically top it up via ACH. You'll never run dry and your affiliates always get paid.</p>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn-back" onclick="goToStep(2)">← Back</button>
+            <button class="btn-next" onclick="goToStep(4)">Continue →</button>
+        </div>
+    </div>
+
+    <!-- STEP 4: Invite Affiliates -->
+    <div class="step" id="step-4">
+        <div class="step-icon">📲</div>
+        <h2>Invite Your First Affiliates</h2>
+        <p class="step-sub">Share your business link or QR code. Anyone who signs up through it becomes your recruited affiliate.</p>
+
+        <div class="qr-area">
+            <div class="qr-box">[ Your QR Code ]</div>
+            <div style="font-size: 0.8rem; color: #6b7280;">Scan to become an affiliate for your business</div>
+        </div>
+
+        <div class="share-link-box">
+            <span class="share-link-text">paid2say.com/join/platinum-tattoos</span>
+            <button class="share-copy-btn" onclick="alert('Copied! (mockup)')">Copy</button>
+        </div>
+
+        <div class="share-methods">
+            <div class="share-method">📱 Text</div>
+            <div class="share-method">📧 Email</div>
+            <div class="share-method">📸 Instagram</div>
+            <div class="share-method">📘 Facebook</div>
+            <div class="share-method">🖨️ Print QR</div>
+        </div>
+
+        <div class="tip-box">
+            <span class="tip-icon">🔒</span>
+            <p><strong>Recruited affiliates are locked to your business</strong> in your category. They can't rep your competitors. Your loyal customers become your permanent salesforce.</p>
+        </div>
+
+        <div class="tip-box" style="border-color: #7b2ff733; background: #1e1b4b22;">
+            <span class="tip-icon">💡</span>
+            <p><strong>Tip:</strong> Start with 5-10 of your most loyal customers. They already love your business — now they get paid to talk about it. You can also skip this and let affiliates find you on the marketplace.</p>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn-back" onclick="goToStep(3)">← Back</button>
+            <button class="btn-next green" onclick="goToStep(5)">Launch My Business 🚀</button>
+        </div>
+    </div>
+
+    <!-- STEP 5: Complete! -->
+    <div class="step" id="step-5">
+        <div class="success-checkmark">✓</div>
+        <h2>You're Live on Paid2Say! 🎉</h2>
+        <p class="step-sub">Your business is ready to receive affiliates and referrals. Here's your setup summary.</p>
+
+        <div class="dashboard-preview">
+            <div class="dp-row">
+                <span class="dp-label">Business</span>
+                <span class="dp-value">Platinum Tattoos & Piercings</span>
+            </div>
+            <div class="dp-row">
+                <span class="dp-label">Category</span>
+                <span class="dp-value">🎨 Tattoo / Piercing</span>
+            </div>
+            <div class="dp-row">
+                <span class="dp-label">Commission</span>
+                <span class="dp-value" style="color:#00d4ff">10% per referral</span>
+            </div>
+            <div class="dp-row">
+                <span class="dp-label">Wallet</span>
+                <span class="dp-value" style="color:#22c55e">$200 loaded</span>
+            </div>
+            <div class="dp-row">
+                <span class="dp-label">Auto-Recharge</span>
+                <span class="dp-value" style="color:#22c55e">✓ Enabled via ACH</span>
+            </div>
+            <div class="dp-row">
+                <span class="dp-label">Subscription</span>
+                <span class="dp-value">$49/mo via ACH</span>
+            </div>
+            <div class="dp-row">
+                <span class="dp-label">Status</span>
+                <span class="dp-value" style="color:#22c55e">● Live</span>
+            </div>
+        </div>
+
+        <div class="btn-row" style="flex-direction: column; gap: 10px;">
+            <button class="btn-next green" onclick="alert('Go to Dashboard (mockup)')">Go to Dashboard →</button>
+            <button class="btn-back" style="width:100%; text-align:center;" onclick="alert('Share (mockup)')">📲 Invite More Affiliates</button>
+        </div>
+    </div>
+</div>
+
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script>
+    let currentStep = 1;
+    const totalSteps = 5;
+
+    function goToStep(step) {
+        // Hide current
+        document.getElementById(`step-${currentStep}`).classList.remove('active');
+        
+        // Show new
+        currentStep = step;
+        const newStep = document.getElementById(`step-${step}`);
+        newStep.classList.add('active');
+
+        // Update progress bar
+        const pct = ((step - 1) / (totalSteps - 1)) * 100;
+        document.getElementById('progressFill').style.width = pct + '%';
+
+        // Update step labels
+        for (let i = 1; i <= totalSteps; i++) {
+            const ps = document.getElementById(`ps-${i}`);
+            ps.classList.remove('active', 'done');
+            if (i < step) ps.classList.add('done');
+            if (i === step) ps.classList.add('active');
+        }
+
+        // Confetti on final step
+        if (step === 5) {
+            launchConfetti();
+        }
+
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function selectCommType(type, el) {
+        document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('pct-config').style.display = type === 'pct' ? 'block' : 'none';
+        document.getElementById('flat-config').style.display = type === 'flat' ? 'block' : 'none';
+    }
+
+    function updateOnboardRate() {
+        const val = document.getElementById('rateSlider').value;
+        const display = document.getElementById('rateValue');
+        display.textContent = val + '%';
+        if (val >= 15) display.style.color = '#22c55e';
+        else if (val >= 8) display.style.color = '#00d4ff';
+        else display.style.color = '#fbbf24';
+    }
+
+    function updateOnboardFlat() {
+        document.getElementById('flatValue').textContent = '$' + document.getElementById('flatSlider').value;
+    }
+
+    function updateOnboardWallet() {
+        const val = parseInt(document.getElementById('walletSlider').value);
+        document.getElementById('walletDisplay').textContent = '$' + val;
+    }
+
+    function launchConfetti() {
+        const container = document.getElementById('confettiContainer');
+        const colors = ['#7b2ff7', '#00d4ff', '#22c55e', '#ffd700', '#f87171', '#fbbf24', '#a78bfa'];
+        
+        for (let i = 0; i < 80; i++) {
+            const piece = document.createElement('div');
+            piece.className = 'confetti-piece';
+            piece.style.left = Math.random() * 100 + '%';
+            piece.style.top = '-10px';
+            piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+            piece.style.animationDelay = Math.random() * 1.5 + 's';
+            piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+            piece.style.width = (6 + Math.random() * 8) + 'px';
+            piece.style.height = (6 + Math.random() * 8) + 'px';
+            piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+            container.appendChild(piece);
+        }
+        
+        setTimeout(() => { container.innerHTML = ''; }, 4000);
+    }
+</script>
+
+</body>
+</html>
