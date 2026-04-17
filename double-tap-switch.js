@@ -45,9 +45,9 @@ function showRoleSwitchToast() {
                     <div style="font-size:0.7rem;color:#22c55e;">✓</div>
                 </div>
                 <div onclick="window.location.href='business-wallet.html'" style="display:flex;align-items:center;gap:12px;padding:12px;background:#1a1a2e;border:1px solid #2a2a3a;border-radius:10px;cursor:pointer;">
-                    <div style="font-size:1.2rem;">☕</div>
+                    <div style="font-size:1.2rem;">🎨</div>
                     <div style="flex:1;">
-                        <div style="font-size:0.82rem;font-weight:600;">Maria's Coffee Bar</div>
+                        <div style="font-size:0.82rem;font-weight:600;">Platinum Tattoos</div>
                         <div style="font-size:0.68rem;color:#6b7280;">Business · $1,247 wallet</div>
                     </div>
                     <div style="font-size:0.7rem;color:#6b7280;">Switch →</div>
