@@ -13,6 +13,58 @@
             min-height: 100vh;
         }
 
+        /* Mobile Nav */
+        .mobile-header {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: #0f0f18;
+            border-bottom: 1px solid #1e1e2e;
+            padding: 14px 20px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mobile-header .mobile-logo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hamburger {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+        .hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 150;
+        }
+        .sidebar-overlay.show { display: block; }
+
         /* Sidebar */
         .layout {
             display: flex;
@@ -24,6 +76,7 @@
             border-right: 1px solid #1e1e2e;
             padding: 24px 0;
             flex-shrink: 0;
+            transition: transform 0.3s ease;
         }
         .sidebar-logo {
             font-size: 1.2rem;
@@ -410,6 +463,23 @@
             align-items: start;
         }
 
+        @media (max-width: 900px) {
+            .mobile-header { display: flex; }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                z-index: 160;
+                transform: translateX(-100%);
+                overflow-y: auto;
+            }
+            .sidebar.open { transform: translateX(0); }
+            .two-col { grid-template-columns: 1fr; }
+            .type-selector { grid-template-columns: 1fr; }
+            .main { padding: 20px 16px; }
+        }
+
         /* Wallet Config */
         .wallet-bar {
             display: flex;
@@ -443,9 +513,20 @@
 </head>
 <body>
 
+<!-- MOBILE HEADER -->
+<div class="mobile-header">
+    <div class="mobile-logo">Paid2Say</div>
+    <button class="hamburger" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+</div>
+<div class="sidebar-overlay" onclick="toggleMenu()"></div>
+
 <div class="layout">
     <!-- SIDEBAR -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <div class="sidebar-logo">Paid2Say</div>
         <div class="sidebar-section">Dashboard</div>
         <div class="sidebar-item">📊 Overview</div>
@@ -954,6 +1035,22 @@
 
     // Init
     updatePreview();
+
+    // Mobile menu
+    function toggleMenu() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.querySelector('.sidebar-overlay');
+        const hamburger = document.querySelector('.hamburger');
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+        hamburger.classList.toggle('open');
+    }
+    // Close menu when clicking a sidebar item on mobile
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.addEventListener('click', () => {
+            if (window.innerWidth <= 900) toggleMenu();
+        });
+    });
 </script>
 
 </body>
