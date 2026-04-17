@@ -599,7 +599,7 @@
                     <h3>2️⃣ Commission Type</h3>
                     <div class="card-sub">Choose how you want to pay affiliates.</div>
 
-                    <div class="type-selector">
+                    <div class="type-selector" style="grid-template-columns: repeat(2, 1fr);">
                         <div class="type-option selected" onclick="selectType('percentage', this)">
                             <div class="type-icon">📊</div>
                             <div class="type-name">Percentage</div>
@@ -609,11 +609,6 @@
                             <div class="type-icon">💵</div>
                             <div class="type-name">Flat Amount</div>
                             <div class="type-desc">Fixed $ per referral</div>
-                        </div>
-                        <div class="type-option" onclick="selectType('tiered', this)">
-                            <div class="type-icon">📈</div>
-                            <div class="type-name">Tiered</div>
-                            <div class="type-desc">Increases with volume</div>
                         </div>
                     </div>
 
@@ -650,30 +645,7 @@
                         </div>
                     </div>
 
-                    <!-- Tiered Config (hidden by default) -->
-                    <div id="config-tiered" style="display:none;">
-                        <div class="form-group">
-                            <label class="form-label">Tier 1: First 25 referrals/month</label>
-                            <div class="input-prefix">
-                                <span class="prefix">$</span>
-                                <input type="number" class="input-field" value="15" id="tier1" oninput="updatePreview()">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Tier 2: 26-50 referrals/month</label>
-                            <div class="input-prefix">
-                                <span class="prefix">$</span>
-                                <input type="number" class="input-field" value="20" id="tier2" oninput="updatePreview()">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Tier 3: 51+ referrals/month</label>
-                            <div class="input-prefix">
-                                <span class="prefix">$</span>
-                                <input type="number" class="input-field" value="25" id="tier3" oninput="updatePreview()">
-                            </div>
-                        </div>
-                    </div>
+
 
                     <div id="floor-warning" class="warning-box" style="display:none;">
                         <span class="warn-icon">⚠️</span>
@@ -905,7 +877,6 @@
         
         document.getElementById('config-percentage').style.display = type === 'percentage' ? 'block' : 'none';
         document.getElementById('config-flat').style.display = type === 'flat' ? 'block' : 'none';
-        document.getElementById('config-tiered').style.display = type === 'tiered' ? 'block' : 'none';
         
         updatePreview();
     }
@@ -1017,10 +988,7 @@
         } else if (commissionType === 'flat') {
             payout = parseInt(document.getElementById('flatSlider').value) || 20;
             typeLabel = 'Flat Amount';
-        } else {
-            payout = parseInt(document.getElementById('tier1').value) || 15;
-            typeLabel = 'Tiered ($' + (document.getElementById('tier1').value || 15) + ' / $' + (document.getElementById('tier2').value || 20) + ' / $' + (document.getElementById('tier3').value || 25) + ')';
-        }
+
 
         // Floor check
         if (payout < floor && ticket > 0) {
