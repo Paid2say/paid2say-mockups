@@ -892,6 +892,13 @@
     let commissionType = 'percentage';
 
     function selectType(type, el) {
+        const ticket = parseFloat(document.getElementById('avgTicket').value) || 0;
+        
+        // Block percentage for under $20 tickets
+        if (type === 'percentage' && ticket < 20) {
+            return; // Don't allow percentage for micro-ticket
+        }
+        
         commissionType = type;
         document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
         el.classList.add('selected');
@@ -938,11 +945,57 @@
     }
 
     function getFloor(ticket) {
-        if (ticket < 25) return 1.50;
-        if (ticket < 75) return 3.00;
+        if (ticket < 20) return 2.00;
+        if (ticket < 75) return 2.00;
         if (ticket < 200) return 5.00;
         if (ticket < 500) return 10.00;
         return 25.00;
+    }
+
+    function enforceTicketRules() {
+        const ticket = parseFloat(document.getElementById('avgTicket').value) || 0;
+        const pctOption = document.querySelectorAll('.type-option')[0];
+        const flatOption = document.querySelectorAll('.type-option')[1];
+        
+        if (ticket > 0 && ticket < 20) {
+            // Under $20: disable percentage, force flat
+            pctOption.style.opacity = '0.35';
+            pctOption.style.pointerEvents = 'none';
+            pctOption.classList.remove('selected');
+            
+            // Show micro-ticket notice
+            let notice = document.getElementById('micro-notice');
+            if (!notice) {
+                notice = document.createElement('div');
+                notice.id = 'micro-notice';
+                notice.className = 'tip-box';
+                notice.style.marginBottom = '16px';
+                notice.innerHTML = '<span class="tip-icon">☕</span><p><strong>Under $20 avg ticket:</strong> Percentage commissions are disabled for micro-ticket businesses. Use Flat Amount with a $2.00 minimum floor to keep it fair for affiliates.</p>';
+                document.querySelector('.type-selector').after(notice);
+            }
+            notice.style.display = 'flex';
+            
+            // Auto-switch to flat if currently on percentage
+            if (commissionType === 'percentage') {
+                selectType('flat', flatOption);
+            }
+            
+            // Enforce $2 min on flat slider
+            document.getElementById('flatSlider').min = 2;
+            if (parseInt(document.getElementById('flatSlider').value) < 2) {
+                document.getElementById('flatSlider').value = 2;
+                updateFlat();
+            }
+        } else {
+            // $20+: enable all options
+            pctOption.style.opacity = '1';
+            pctOption.style.pointerEvents = 'auto';
+            
+            let notice = document.getElementById('micro-notice');
+            if (notice) notice.style.display = 'none';
+            
+            document.getElementById('flatSlider').min = 1;
+        }
     }
 
     function updatePreview() {
@@ -951,10 +1004,15 @@
         const floor = getFloor(ticket);
         let payout = 0;
         let typeLabel = '';
+        
+        // Enforce ticket rules first
+        enforceTicketRules();
 
         if (commissionType === 'percentage') {
             const rate = parseInt(document.getElementById('rateSlider').value) || 10;
             payout = ticket * (rate / 100);
+            // Enforce $2 minimum even on percentage
+            if (payout < 2 && ticket >= 20) payout = Math.max(payout, 2);
             typeLabel = 'Percentage (' + rate + '%)';
         } else if (commissionType === 'flat') {
             payout = parseInt(document.getElementById('flatSlider').value) || 20;
