@@ -327,6 +327,39 @@
 <div class="layout">
     <div class="sidebar" id="sidebar">
         <div class="sidebar-logo">Paid2Say</div>
+
+        <!-- Role Switcher -->
+        <div style="margin:0 16px 16px;background:#12121a;border:1px solid #2a2a3a;border-radius:12px;padding:12px;cursor:pointer;" onclick="toggleRoleSwitcher()">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7b2ff7,#00d4ff);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:white;">MR</div>
+                <div style="flex:1;">
+                    <div style="font-size:0.82rem;font-weight:600;">Maria Rodriguez</div>
+                    <div style="font-size:0.68rem;color:#22c55e;">👤 Affiliate Mode</div>
+                </div>
+                <div style="color:#6b7280;font-size:0.8rem;">⇅</div>
+            </div>
+        </div>
+        <div id="roleSwitcher" style="display:none;margin:-8px 16px 16px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:0 0 12px 12px;overflow:hidden;">
+            <div style="padding:12px;display:flex;align-items:center;gap:10px;background:#0d1b2a;border-left:3px solid #00d4ff;">
+                <div style="font-size:1rem;">👤</div>
+                <div>
+                    <div style="font-size:0.8rem;font-weight:600;color:#00d4ff;">Affiliate Mode</div>
+                    <div style="font-size:0.68rem;color:#6b7280;">@maria_ref · $847 balance</div>
+                </div>
+                <div style="margin-left:auto;font-size:0.7rem;color:#22c55e;">✓ Active</div>
+            </div>
+            <div style="padding:12px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#1a1a2e'" onmouseout="this.style.background='transparent'" onclick="window.location.href='business-wallet.html'">
+                <div style="font-size:1rem;">☕</div>
+                <div>
+                    <div style="font-size:0.8rem;font-weight:600;">Maria's Coffee Bar</div>
+                    <div style="font-size:0.68rem;color:#6b7280;">Business · $1,247 wallet</div>
+                </div>
+                <div style="margin-left:auto;font-size:0.7rem;color:#6b7280;">Switch →</div>
+            </div>
+            <div style="padding:10px 12px;border-top:1px solid #1e1e2e;text-align:center;">
+                <span style="font-size:0.75rem;color:#7b2ff7;cursor:pointer;">+ Add Another Business</span>
+            </div>
+        </div>
         <div class="sidebar-section">Home</div>
         <a href="affiliate-dashboard.html" style="text-decoration:none;color:inherit;display:block;"><div class="sidebar-item active">🏠 Dashboard</div></a>
         <a href="affiliate-dashboard.html" style="text-decoration:none;color:inherit;display:block;"><div class="sidebar-item">📊 My Earnings</div></a>
