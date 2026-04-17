@@ -608,7 +608,7 @@
         <a href="social-feed.html" style="text-decoration:none;"><div class="bnav-item"><div class="bnav-icon">🔍</div><div class="bnav-label">Explore</div></div></a>
         <a href="social-feed.html" style="text-decoration:none;"><div class="bnav-item"><div class="bnav-icon" style="font-size:1.6rem">➕</div><div class="bnav-label">Post</div></div></a>
         <a href="affiliate-dashboard.html" style="text-decoration:none;"><div class="bnav-item"><div class="bnav-icon">📲</div><div class="bnav-label">Refer</div></div></a>
-        <a href="affiliate-profile.html" style="text-decoration:none;"><div class="bnav-item"><div class="bnav-icon">👤</div><div class="bnav-label">Profile</div></div></a>
+        <a href="affiliate-profile.html" style="text-decoration:none;" id="profileBtn" onclick="handleProfileTap(event)"><div class="bnav-item"><div class="bnav-icon">👤</div><div class="bnav-label">Profile</div></div></a>
     </div>
 </div>
 
@@ -629,5 +629,6 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 
+<script src="double-tap-switch.js"></script>
 </body>
 </html>
