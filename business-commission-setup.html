@@ -616,8 +616,11 @@
                     <div id="config-percentage">
                         <div class="form-group">
                             <label class="form-label">Commission Rate</label>
-                            <div class="slider-value" id="rateDisplay" style="color: #00d4ff;">10%</div>
-                            <input type="range" id="rateSlider" min="1" max="25" value="10" oninput="updateRate()">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 4px; margin: 8px 0;">
+                                <input type="number" id="rateInput" value="10" min="1" max="50" style="width: 80px; background: #0a0a0f; border: 1px solid #3a3a5a; border-radius: 8px; padding: 10px 14px; color: #00d4ff; font-size: 1.8rem; font-weight: 800; text-align: center; outline: none;" oninput="syncRateFromInput()">
+                                <span style="font-size: 1.8rem; font-weight: 800; color: #00d4ff;">%</span>
+                            </div>
+                            <input type="range" id="rateSlider" min="1" max="25" value="10" oninput="syncRateFromSlider()">
                             <div class="slider-labels">
                                 <span>1%</span>
                                 <span>5%</span>
@@ -626,6 +629,7 @@
                                 <span>20%</span>
                                 <span>25%</span>
                             </div>
+                            <div class="form-hint">Drag the slider or type an exact percentage.</div>
                         </div>
                     </div>
 
@@ -633,8 +637,11 @@
                     <div id="config-flat" style="display:none;">
                         <div class="form-group">
                             <label class="form-label">Flat Amount Per Referral</label>
-                            <div class="slider-value" id="flatDisplay" style="color: #22c55e;">$20</div>
-                            <input type="range" id="flatSlider" min="1" max="500" value="20" oninput="updateFlat()">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin: 8px 0;">
+                                <span style="font-size: 1.8rem; font-weight: 800; color: #22c55e;">$</span>
+                                <input type="number" id="flatInput" value="20" min="2" max="2000" style="width: 120px; background: #0a0a0f; border: 1px solid #3a3a5a; border-radius: 8px; padding: 10px 14px; color: #22c55e; font-size: 1.8rem; font-weight: 800; text-align: center; outline: none;" oninput="syncFlatFromInput()">
+                            </div>
+                            <input type="range" id="flatSlider" min="1" max="500" value="20" oninput="syncFlatFromSlider()">
                             <div class="slider-labels">
                                 <span>$1</span>
                                 <span>$25</span>
@@ -642,6 +649,7 @@
                                 <span>$250</span>
                                 <span>$500</span>
                             </div>
+                            <div class="form-hint">Drag the slider or type an exact amount. Max $2,000.</div>
                         </div>
                     </div>
 
@@ -881,25 +889,52 @@
         updatePreview();
     }
 
-    function updateRate() {
-        const rate = document.getElementById('rateSlider').value;
-        document.getElementById('rateDisplay').textContent = rate + '%';
-        
+    function syncRateFromSlider() {
+        const val = document.getElementById('rateSlider').value;
+        document.getElementById('rateInput').value = val;
+        updateRateColor(val);
+        updatePreview();
+    }
+
+    function syncRateFromInput() {
+        let val = parseInt(document.getElementById('rateInput').value) || 0;
+        if (val > 50) { val = 50; document.getElementById('rateInput').value = 50; }
+        document.getElementById('rateSlider').value = Math.min(val, 25);
+        updateRateColor(val);
+        updatePreview();
+    }
+
+    function updateRateColor(rate) {
+        const input = document.getElementById('rateInput');
         if (rate >= 15) {
-            document.getElementById('rateDisplay').style.color = '#22c55e';
+            input.style.color = '#22c55e';
         } else if (rate >= 8) {
-            document.getElementById('rateDisplay').style.color = '#00d4ff';
+            input.style.color = '#00d4ff';
         } else {
-            document.getElementById('rateDisplay').style.color = '#fbbf24';
+            input.style.color = '#fbbf24';
         }
-        
+    }
+
+    function updateRate() {
+        syncRateFromSlider();
+    }
+
+    function syncFlatFromSlider() {
+        const val = document.getElementById('flatSlider').value;
+        document.getElementById('flatInput').value = val;
+        updatePreview();
+    }
+
+    function syncFlatFromInput() {
+        let val = parseInt(document.getElementById('flatInput').value) || 0;
+        if (val > 2000) { val = 2000; document.getElementById('flatInput').value = 2000; }
+        // Sync slider (capped at 500 for slider range)
+        document.getElementById('flatSlider').value = Math.min(val, 500);
         updatePreview();
     }
 
     function updateFlat() {
-        const flat = document.getElementById('flatSlider').value;
-        document.getElementById('flatDisplay').textContent = '$' + flat;
-        updatePreview();
+        syncFlatFromSlider();
     }
 
     function updateWallet() {
@@ -980,13 +1015,13 @@
         enforceTicketRules();
 
         if (commissionType === 'percentage') {
-            const rate = parseInt(document.getElementById('rateSlider').value) || 10;
+            const rate = parseInt(document.getElementById('rateInput').value) || 10;
             payout = ticket * (rate / 100);
             // Enforce $2 minimum even on percentage
             if (payout < 2 && ticket >= 20) payout = Math.max(payout, 2);
             typeLabel = 'Percentage (' + rate + '%)';
         } else if (commissionType === 'flat') {
-            payout = parseInt(document.getElementById('flatSlider').value) || 20;
+            payout = parseInt(document.getElementById('flatInput').value) || 20;
             typeLabel = 'Flat Amount';
 
 
