@@ -44,7 +44,7 @@
         .layout { display: flex; min-height: 100vh; }
         .sidebar {
             width: 240px; background: #0f0f18; border-right: 1px solid #1e1e2e;
-            padding: 24px 0; flex-shrink: 0; transition: transform 0.3s ease;
+            padding: 24px 0; padding-top: calc(24px + env(safe-area-inset-top, 0px)); flex-shrink: 0; transition: transform 0.3s ease;
         }
         .sidebar-logo {
             font-size: 1.2rem; font-weight: 800; padding: 0 20px 24px;

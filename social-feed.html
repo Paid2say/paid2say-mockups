@@ -48,7 +48,7 @@
         /* LEFT SIDEBAR */
         .sidebar {
             width: 240px; background: #0f0f18; border-right: 1px solid #1e1e2e;
-            padding: 24px 0; flex-shrink: 0; transition: transform 0.3s ease;
+            padding: 24px 0; padding-top: calc(24px + env(safe-area-inset-top, 0px)); flex-shrink: 0; transition: transform 0.3s ease;
             position: sticky; top: 0; height: 100vh; overflow-y: auto;
         }
         .sidebar-logo {
