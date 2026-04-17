@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paid2Say — Social Feed</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* Mobile Nav */
+        .mobile-header {
+            display: none; position: sticky; top: 0; z-index: 200;
+            background: #0f0f18ee; border-bottom: 1px solid #1e1e2e;
+            padding: 14px 20px; align-items: center; justify-content: space-between;
+            backdrop-filter: blur(10px);
+        }
+        .mobile-header .mobile-logo {
+            font-size: 1.2rem; font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hamburger {
+            width: 32px; height: 32px; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; gap: 5px;
+            cursor: pointer; background: none; border: none;
+        }
+        .hamburger span { display: block; width: 22px; height: 2px; background: #e0e0e0; border-radius: 2px; transition: all 0.3s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .sidebar-overlay { display: none; position: fixed; top:0;left:0;right:0;bottom:0; background: rgba(0,0,0,0.6); z-index: 150; }
+        .sidebar-overlay.show { display: block; }
+
+        .layout { display: flex; min-height: 100vh; }
+
+        /* LEFT SIDEBAR */
+        .sidebar {
+            width: 240px; background: #0f0f18; border-right: 1px solid #1e1e2e;
+            padding: 24px 0; flex-shrink: 0; transition: transform 0.3s ease;
+            position: sticky; top: 0; height: 100vh; overflow-y: auto;
+        }
+        .sidebar-logo {
+            font-size: 1.3rem; font-weight: 800; padding: 0 20px 20px;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .sidebar-item {
+            padding: 10px 20px; font-size: 0.88rem; color: #6b7280;
+            cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.2s;
+        }
+        .sidebar-item:hover { color: #e0e0e0; background: #1a1a2e; }
+        .sidebar-item.active { color: #00d4ff; background: #0d1b2a; border-right: 3px solid #00d4ff; }
+        .sidebar-item .notif-badge {
+            margin-left: auto; background: #f87171; color: white; font-size: 0.65rem;
+            padding: 1px 6px; border-radius: 10px; font-weight: 700;
+        }
+        .sidebar-section { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #3a3a5a; padding: 20px 20px 8px; }
+
+        /* Profile Card in Sidebar */
+        .sidebar-profile {
+            margin: 0 16px 16px; padding: 16px; background: #12121a;
+            border: 1px solid #2a2a3a; border-radius: 12px;
+        }
+        .sp-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .sp-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, #7b2ff7, #00d4ff);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; font-weight: 700; color: white;
+        }
+        .sp-name { font-size: 0.88rem; font-weight: 600; }
+        .sp-handle { font-size: 0.75rem; color: #6b7280; }
+        .sp-stats { display: flex; gap: 12px; }
+        .sp-stat { text-align: center; }
+        .sp-stat .num { font-size: 0.85rem; font-weight: 700; }
+        .sp-stat .label { font-size: 0.65rem; color: #6b7280; }
+
+        /* MAIN FEED */
+        .main-feed {
+            flex: 1; max-width: 600px; padding: 20px; border-right: 1px solid #1e1e2e;
+        }
+
+        /* Create Post */
+        .create-post {
+            background: #12121a; border: 1px solid #2a2a3a; border-radius: 14px;
+            padding: 18px; margin-bottom: 20px;
+        }
+        .create-top { display: flex; gap: 12px; align-items: flex-start; }
+        .create-avatar {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: linear-gradient(135deg, #7b2ff7, #00d4ff);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: 700; color: white; flex-shrink: 0;
+        }
+        .create-input {
+            flex: 1; background: #0a0a0f; border: 1px solid #2a2a3a; border-radius: 10px;
+            padding: 12px 14px; color: #e0e0e0; font-size: 0.88rem; resize: none;
+            outline: none; min-height: 60px; font-family: inherit;
+        }
+        .create-input::placeholder { color: #4b5563; }
+        .create-actions {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 12px; padding-top: 12px; border-top: 1px solid #1e1e2e;
+        }
+        .create-tools { display: flex; gap: 8px; }
+        .create-tool {
+            padding: 6px 12px; border-radius: 8px; font-size: 0.78rem;
+            background: #1a1a2e; border: 1px solid #2a2a3a; cursor: pointer;
+            color: #8892a4; display: flex; align-items: center; gap: 4px;
+        }
+        .create-tool:hover { border-color: #3a3a5a; color: #e0e0e0; }
+        .post-btn {
+            background: linear-gradient(135deg, #7b2ff7, #5b1fd7); color: white;
+            padding: 8px 20px; border-radius: 8px; font-weight: 600; font-size: 0.82rem;
+            border: none; cursor: pointer;
+        }
+
+        /* Feed Tabs */
+        .feed-tabs {
+            display: flex; gap: 4px; margin-bottom: 16px; background: #12121a;
+            border-radius: 10px; padding: 4px; border: 1px solid #2a2a3a;
+        }
+        .feed-tab {
+            flex: 1; padding: 8px; text-align: center; border-radius: 8px;
+            font-size: 0.82rem; font-weight: 600; cursor: pointer; color: #6b7280;
+            transition: all 0.2s;
+        }
+        .feed-tab.active { background: #1a1a2e; color: #e0e0e0; }
+
+        /* Post Card */
+        .post-card {
+            background: #12121a; border: 1px solid #2a2a3a; border-radius: 14px;
+            margin-bottom: 16px; overflow: hidden;
+        }
+        .post-header {
+            display: flex; align-items: center; gap: 10px; padding: 16px 16px 12px;
+        }
+        .post-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; font-weight: 700; color: white; flex-shrink: 0;
+        }
+        .post-user-info { flex: 1; }
+        .post-name { font-size: 0.88rem; font-weight: 600; }
+        .post-name .verified { color: #00d4ff; font-size: 0.75rem; }
+        .post-meta { font-size: 0.73rem; color: #6b7280; }
+        .post-menu { color: #6b7280; cursor: pointer; font-size: 1.2rem; }
+        .post-body { padding: 0 16px 14px; font-size: 0.9rem; line-height: 1.55; }
+        .post-body .hashtag { color: #7b2ff7; }
+        .post-body .mention { color: #00d4ff; }
+
+        /* Business Tag */
+        .biz-tag {
+            margin: 0 16px 14px; padding: 12px; background: #1a1a2e;
+            border-radius: 10px; display: flex; align-items: center; gap: 10px;
+            border: 1px solid #2a2a3a; cursor: pointer;
+        }
+        .biz-tag:hover { border-color: #3a3a5a; }
+        .biz-tag-icon {
+            width: 36px; height: 36px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-size: 1rem;
+        }
+        .biz-tag-info { flex: 1; }
+        .biz-tag-name { font-size: 0.82rem; font-weight: 600; }
+        .biz-tag-cat { font-size: 0.7rem; color: #6b7280; }
+        .biz-tag-cta {
+            font-size: 0.72rem; color: #7b2ff7; font-weight: 600;
+            padding: 4px 12px; border: 1px solid #7b2ff733; border-radius: 6px;
+        }
+
+        /* Post Image */
+        .post-image {
+            width: 100%; aspect-ratio: 16/10; background: #1a1a2e;
+            display: flex; align-items: center; justify-content: center;
+            color: #3a3a5a; font-size: 0.8rem;
+        }
+
+        /* Coupon/Deal Card */
+        .deal-card {
+            margin: 0 16px 14px; padding: 16px;
+            background: linear-gradient(135deg, #14532d22, #12121a);
+            border: 1px solid #22c55e33; border-radius: 10px;
+        }
+        .deal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .deal-badge { font-size: 0.7rem; font-weight: 700; color: #22c55e; text-transform: uppercase; letter-spacing: 0.5px; }
+        .deal-expires { font-size: 0.68rem; color: #6b7280; }
+        .deal-title { font-size: 1rem; font-weight: 700; color: #22c55e; margin-bottom: 4px; }
+        .deal-desc { font-size: 0.82rem; color: #8892a4; margin-bottom: 10px; }
+        .deal-claim {
+            display: inline-block; padding: 6px 16px; background: #22c55e; color: #0a0a0f;
+            border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;
+        }
+
+        /* Engagement Bar */
+        .post-engagement {
+            display: flex; justify-content: space-between; padding: 8px 16px;
+            border-top: 1px solid #1e1e2e; font-size: 0.78rem; color: #6b7280;
+        }
+        .post-actions {
+            display: flex; gap: 0; border-top: 1px solid #1e1e2e;
+        }
+        .post-action {
+            flex: 1; padding: 10px; text-align: center; font-size: 0.8rem;
+            color: #6b7280; cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .post-action:hover { background: #1a1a2e; color: #e0e0e0; }
+        .post-action.liked { color: #f87171; }
+        .post-action.shared { color: #22c55e; }
+
+        /* Commission Earned Badge */
+        .earned-badge {
+            margin: 0 16px 14px; padding: 10px 14px;
+            background: linear-gradient(135deg, #422006, #12121a);
+            border: 1px solid #ffd70033; border-radius: 8px;
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.78rem;
+        }
+        .earned-badge .earned-amount { color: #ffd700; font-weight: 700; }
+        .earned-badge .earned-text { color: #8892a4; }
+
+        /* RIGHT SIDEBAR */
+        .right-sidebar {
+            width: 300px; padding: 20px; flex-shrink: 0;
+            position: sticky; top: 0; height: 100vh; overflow-y: auto;
+        }
+        .right-card {
+            background: #12121a; border: 1px solid #2a2a3a; border-radius: 14px;
+            padding: 18px; margin-bottom: 16px;
+        }
+        .right-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; }
+
+        /* Trending */
+        .trend-item { padding: 8px 0; border-bottom: 1px solid #1e1e2e; }
+        .trend-item:last-child { border-bottom: none; }
+        .trend-cat { font-size: 0.7rem; color: #6b7280; }
+        .trend-tag { font-size: 0.85rem; font-weight: 600; color: #7b2ff7; }
+        .trend-count { font-size: 0.7rem; color: #4b5563; }
+
+        /* Suggested Businesses */
+        .sug-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #1e1e2e; }
+        .sug-item:last-child { border-bottom: none; }
+        .sug-avatar { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+        .sug-info { flex: 1; }
+        .sug-name { font-size: 0.82rem; font-weight: 600; }
+        .sug-cat { font-size: 0.68rem; color: #6b7280; }
+        .sug-btn {
+            font-size: 0.72rem; color: #7b2ff7; font-weight: 600; padding: 4px 10px;
+            border: 1px solid #7b2ff733; border-radius: 6px; cursor: pointer;
+        }
+
+        /* Top Earners */
+        .earner-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #1e1e2e; }
+        .earner-item:last-child { border-bottom: none; }
+        .earner-rank { font-size: 0.85rem; font-weight: 700; min-width: 24px; }
+        .earner-avatar { width: 30px; height: 30px; border-radius: 50%; background: #1a1a2e; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #6b7280; }
+        .earner-name { flex: 1; font-size: 0.82rem; }
+        .earner-amount { font-size: 0.82rem; font-weight: 600; color: #22c55e; }
+
+        /* Bottom Nav (Mobile) */
+        .bottom-nav {
+            display: none; position: fixed; bottom: 0; left: 0; right: 0;
+            background: #0f0f18ee; border-top: 1px solid #1e1e2e;
+            padding: 8px 0 12px; z-index: 100; backdrop-filter: blur(10px);
+        }
+        .bottom-nav-items { display: flex; justify-content: space-around; }
+        .bnav-item { text-align: center; cursor: pointer; padding: 4px 8px; }
+        .bnav-item .bnav-icon { font-size: 1.3rem; }
+        .bnav-item .bnav-label { font-size: 0.6rem; color: #6b7280; margin-top: 2px; }
+        .bnav-item.active .bnav-label { color: #00d4ff; }
+        .bnav-item.active .bnav-icon { filter: brightness(1.5); }
+
+        footer { text-align: center; padding: 40px; color: #3a3a5a; font-size: 0.8rem; }
+
+        @media (max-width: 1100px) { .right-sidebar { display: none; } }
+        @media (max-width: 900px) {
+            .mobile-header { display: flex; }
+            .sidebar { position: fixed; top:0;left:0;bottom:0; z-index:160; transform: translateX(-100%); overflow-y: auto; }
+            .sidebar.open { transform: translateX(0); }
+            .main-feed { max-width: 100%; padding: 16px 12px 80px; border-right: none; }
+            .bottom-nav { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="mobile-header">
+    <div class="mobile-logo">Paid2Say</div>
+    <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</div>
+<div class="sidebar-overlay" onclick="toggleMenu()"></div>
+
+<div class="layout">
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-logo">Paid2Say</div>
+
+        <div class="sidebar-profile">
+            <div class="sp-header">
+                <div class="sp-avatar">MR</div>
+                <div>
+                    <div class="sp-name">Maria Rodriguez</div>
+                    <div class="sp-handle">@maria_ref</div>
+                </div>
+            </div>
+            <div class="sp-stats">
+                <div class="sp-stat"><div class="num">73</div><div class="label">Referrals</div></div>
+                <div class="sp-stat"><div class="num">142</div><div class="label">Following</div></div>
+                <div class="sp-stat"><div class="num">89</div><div class="label">Followers</div></div>
+            </div>
+        </div>
+
+        <div class="sidebar-item active">🏠 Feed</div>
+        <div class="sidebar-item">🔍 Explore</div>
+        <div class="sidebar-item">🔔 Notifications <span class="notif-badge">3</span></div>
+        <div class="sidebar-item">💬 Messages</div>
+        <div class="sidebar-item">📲 Tap to Refer</div>
+        <div class="sidebar-section">My Stuff</div>
+        <div class="sidebar-item">📊 Dashboard</div>
+        <div class="sidebar-item">💳 Wallet — $847</div>
+        <div class="sidebar-item">🏪 My Businesses</div>
+        <div class="sidebar-item">👑 Legacy Progress</div>
+        <div class="sidebar-section">Discover</div>
+        <div class="sidebar-item">🔥 Trending</div>
+        <div class="sidebar-item">🏆 Leaderboard</div>
+        <div class="sidebar-item">🏪 Browse Businesses</div>
+        <div class="sidebar-section">Settings</div>
+        <div class="sidebar-item">👤 Profile</div>
+        <div class="sidebar-item">⚙️ Settings</div>
+    </div>
+
+    <!-- MAIN FEED -->
+    <div class="main-feed">
+        <!-- Feed Tabs -->
+        <div class="feed-tabs">
+            <div class="feed-tab active">For You</div>
+            <div class="feed-tab" onclick="this.parentElement.querySelector('.active').classList.remove('active');this.classList.add('active')">Following</div>
+            <div class="feed-tab" onclick="this.parentElement.querySelector('.active').classList.remove('active');this.classList.add('active')">Nearby</div>
+            <div class="feed-tab" onclick="this.parentElement.querySelector('.active').classList.remove('active');this.classList.add('active')">Deals</div>
+        </div>
+
+        <!-- Create Post -->
+        <div class="create-post">
+            <div class="create-top">
+                <div class="create-avatar">MR</div>
+                <textarea class="create-input" placeholder="Share a business, post a deal, or tell your story..."></textarea>
+            </div>
+            <div class="create-actions">
+                <div class="create-tools">
+                    <div class="create-tool">📷 Photo</div>
+                    <div class="create-tool">🏪 Tag Biz</div>
+                    <div class="create-tool">🎟️ Deal</div>
+                    <div class="create-tool">📍 Location</div>
+                </div>
+                <button class="post-btn">Post</button>
+            </div>
+        </div>
+
+        <!-- POST 1: Affiliate promoting a business -->
+        <div class="post-card">
+            <div class="post-header">
+                <div class="post-avatar" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">JT</div>
+                <div class="post-user-info">
+                    <div class="post-name">Jake Torres <span class="verified">✓</span></div>
+                    <div class="post-meta">@jake_tattoo · 2h · San Antonio</div>
+                </div>
+                <div class="post-menu">···</div>
+            </div>
+            <div class="post-body">
+                Just watched <span class="mention">@platinum_tattoos</span> do the most insane Japanese sleeve I've ever seen 🔥 If you're looking for a tattoo shop in SA that actually takes their craft seriously — this is it. Not even close.
+                <br><br>
+                <span class="hashtag">#SanAntonioTattoos</span> <span class="hashtag">#PlatinumTattoos</span> <span class="hashtag">#Paid2Say</span>
+            </div>
+            <div class="post-image" style="background: linear-gradient(135deg, #1a1a2e, #2a1a3e);">
+                [ 📸 Tattoo sleeve photo ]
+            </div>
+            <div class="biz-tag">
+                <div class="biz-tag-icon" style="background: #1e1b4b;">🎨</div>
+                <div class="biz-tag-info">
+                    <div class="biz-tag-name">Platinum Tattoos & Piercings</div>
+                    <div class="biz-tag-cat">Tattoo / Piercing · NW Loop 410, SA</div>
+                </div>
+                <div class="biz-tag-cta">Visit →</div>
+            </div>
+            <div class="earned-badge">
+                <span class="earned-amount">💰 $20.00 earned</span>
+                <span class="earned-text">from 1 referral this week via this post</span>
+            </div>
+            <div class="post-engagement">
+                <span>47 likes · 12 comments</span>
+                <span>3 referrals generated</span>
+            </div>
+            <div class="post-actions">
+                <div class="post-action liked">❤️ 47</div>
+                <div class="post-action">💬 12</div>
+                <div class="post-action shared">🔄 8</div>
+                <div class="post-action">📤 Share</div>
+            </div>
+        </div>
+
+        <!-- POST 2: Business posting a deal -->
+        <div class="post-card">
+            <div class="post-header">
+                <div class="post-avatar" style="background: linear-gradient(135deg, #22c55e, #16a34a);">RC</div>
+                <div class="post-user-info">
+                    <div class="post-name">Rosella Coffee Bar <span class="verified">✓</span></div>
+                    <div class="post-meta">@rosella_coffee · Business · 5h</div>
+                </div>
+                <div class="post-menu">···</div>
+            </div>
+            <div class="post-body">
+                Weekend vibes ☕ New spring menu just dropped. Lavender oat latte is about to change your life.
+            </div>
+            <div class="deal-card">
+                <div class="deal-header">
+                    <span class="deal-badge">🎟️ EXCLUSIVE DEAL</span>
+                    <span class="deal-expires">Expires Apr 20</span>
+                </div>
+                <div class="deal-title">15% Off Any Spring Drink</div>
+                <div class="deal-desc">Show this at checkout. Valid at the Downtown SA location only.</div>
+                <div class="deal-claim">Claim Deal</div>
+            </div>
+            <div class="post-engagement">
+                <span>82 likes · 24 comments</span>
+                <span>14 claims</span>
+            </div>
+            <div class="post-actions">
+                <div class="post-action">❤️ 82</div>
+                <div class="post-action">💬 24</div>
+                <div class="post-action">🔄 19</div>
+                <div class="post-action">📤 Share</div>
+            </div>
+        </div>
+
+        <!-- POST 3: Affiliate milestone -->
+        <div class="post-card">
+            <div class="post-header">
+                <div class="post-avatar" style="background: linear-gradient(135deg, #a78bfa, #7c3aed);">CF</div>
+                <div class="post-user-info">
+                    <div class="post-name">Carlos Fitness <span class="verified">✓</span></div>
+                    <div class="post-meta">@carlos_fit · 8h · Legacy Affiliate 👑</div>
+                </div>
+                <div class="post-menu">···</div>
+            </div>
+            <div class="post-body">
+                Just hit <strong>Legacy status</strong> on Paid2Say 👑🔥
+                <br><br>
+                3 years. 300+ referrals. Now I earn residual commissions every time my referrals come back and spend. Your voice IS your equity — if you put in the work.
+                <br><br>
+                Started as a side hustle, now it's a real income stream. If you're not on <span class="mention">@paid2say</span> yet, what are you waiting for?
+                <br><br>
+                <span class="hashtag">#Legacy</span> <span class="hashtag">#YourVoiceIsYourEquity</span> <span class="hashtag">#Paid2Say</span> <span class="hashtag">#ResidualIncome</span>
+            </div>
+            <div style="margin: 0 16px 14px; padding: 16px; background: linear-gradient(135deg, #422006, #1a1a10); border: 1px solid #ffd70044; border-radius: 10px; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 6px;">👑</div>
+                <div style="font-size: 1rem; font-weight: 700; color: #ffd700;">Legacy Status Unlocked</div>
+                <div style="font-size: 0.8rem; color: #8892a4; margin-top: 4px;">300+ referrals · 3 years · Residual commissions active</div>
+            </div>
+            <div class="post-engagement">
+                <span>234 likes · 67 comments</span>
+                <span>🔥 Trending</span>
+            </div>
+            <div class="post-actions">
+                <div class="post-action liked">❤️ 234</div>
+                <div class="post-action">💬 67</div>
+                <div class="post-action shared">🔄 45</div>
+                <div class="post-action">📤 Share</div>
+            </div>
+        </div>
+
+        <!-- POST 4: Review style post -->
+        <div class="post-card">
+            <div class="post-header">
+                <div class="post-avatar" style="background: linear-gradient(135deg, #ec4899, #f43f5e);">LM</div>
+                <div class="post-user-info">
+                    <div class="post-name">Lisa Martinez</div>
+                    <div class="post-meta">@lisa_ink · 12h</div>
+                </div>
+                <div class="post-menu">···</div>
+            </div>
+            <div class="post-body">
+                Got my septum pierced at <span class="mention">@platinum_tattoos</span> yesterday — Noah is the GOAT 🐐 Zero pain, perfect placement, walked me through the whole aftercare. If you've been thinking about it, just go.
+                <br><br>
+                Also low-key made $20 because my friend Sarah went in after seeing my story lol <span class="hashtag">#Paid2Say</span> <span class="hashtag">#GetPaidToTalk</span>
+            </div>
+            <div class="biz-tag">
+                <div class="biz-tag-icon" style="background: #1e1b4b;">🎨</div>
+                <div class="biz-tag-info">
+                    <div class="biz-tag-name">Platinum Tattoos & Piercings</div>
+                    <div class="biz-tag-cat">Piercing · Noah Y. · ⭐ 4.9</div>
+                </div>
+                <div class="biz-tag-cta">Book →</div>
+            </div>
+            <div class="post-engagement">
+                <span>56 likes · 8 comments</span>
+                <span>1 referral generated</span>
+            </div>
+            <div class="post-actions">
+                <div class="post-action liked">❤️ 56</div>
+                <div class="post-action">💬 8</div>
+                <div class="post-action">🔄 3</div>
+                <div class="post-action">📤 Share</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="right-sidebar">
+        <!-- Trending -->
+        <div class="right-card">
+            <h4>🔥 Trending in San Antonio</h4>
+            <div class="trend-item">
+                <div class="trend-cat">Tattoo & Piercing</div>
+                <div class="trend-tag">#SanAntonioTattoos</div>
+                <div class="trend-count">234 posts</div>
+            </div>
+            <div class="trend-item">
+                <div class="trend-cat">Food & Drink</div>
+                <div class="trend-tag">#SAFoodie</div>
+                <div class="trend-count">189 posts</div>
+            </div>
+            <div class="trend-item">
+                <div class="trend-cat">Paid2Say</div>
+                <div class="trend-tag">#YourVoiceIsYourEquity</div>
+                <div class="trend-count">156 posts</div>
+            </div>
+            <div class="trend-item">
+                <div class="trend-cat">Beauty</div>
+                <div class="trend-tag">#SABeauty</div>
+                <div class="trend-count">98 posts</div>
+            </div>
+        </div>
+
+        <!-- Suggested Businesses -->
+        <div class="right-card">
+            <h4>🏪 Suggested Businesses</h4>
+            <div class="sug-item">
+                <div class="sug-avatar" style="background: #14532d;">🌮</div>
+                <div class="sug-info">
+                    <div class="sug-name">Taco Haven</div>
+                    <div class="sug-cat">Restaurant · Southtown</div>
+                </div>
+                <div class="sug-btn">Rep →</div>
+            </div>
+            <div class="sug-item">
+                <div class="sug-avatar" style="background: #1e1b4b;">💪</div>
+                <div class="sug-info">
+                    <div class="sug-name">Iron Culture Gym</div>
+                    <div class="sug-cat">Fitness · Stone Oak</div>
+                </div>
+                <div class="sug-btn">Rep →</div>
+            </div>
+            <div class="sug-item">
+                <div class="sug-avatar" style="background: #422006;">🔧</div>
+                <div class="sug-info">
+                    <div class="sug-name">SA Auto Detail</div>
+                    <div class="sug-cat">Auto · NW Side</div>
+                </div>
+                <div class="sug-btn">Rep →</div>
+            </div>
+        </div>
+
+        <!-- Top Earners -->
+        <div class="right-card">
+            <h4>💰 Top Earners This Week</h4>
+            <div class="earner-item">
+                <div class="earner-rank" style="color:#ffd700">🥇</div>
+                <div class="earner-avatar">CF</div>
+                <div class="earner-name">@carlos_fit</div>
+                <div class="earner-amount">$420</div>
+            </div>
+            <div class="earner-item">
+                <div class="earner-rank" style="color:#c0c0c0">🥈</div>
+                <div class="earner-avatar">JT</div>
+                <div class="earner-name">@jake_tattoo</div>
+                <div class="earner-amount">$380</div>
+            </div>
+            <div class="earner-item">
+                <div class="earner-rank" style="color:#cd7f32">🥉</div>
+                <div class="earner-avatar">LM</div>
+                <div class="earner-name">@lisa_ink</div>
+                <div class="earner-amount">$310</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; font-size: 0.7rem; color: #3a3a5a; padding: 12px;">
+            Paid2Say · Terms · Privacy · © 2026
+        </div>
+    </div>
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<div class="bottom-nav">
+    <div class="bottom-nav-items">
+        <div class="bnav-item active"><div class="bnav-icon">🏠</div><div class="bnav-label">Feed</div></div>
+        <div class="bnav-item"><div class="bnav-icon">🔍</div><div class="bnav-label">Explore</div></div>
+        <div class="bnav-item"><div class="bnav-icon" style="font-size:1.6rem">➕</div><div class="bnav-label">Post</div></div>
+        <div class="bnav-item"><div class="bnav-icon">📲</div><div class="bnav-label">Refer</div></div>
+        <div class="bnav-item"><div class="bnav-icon">👤</div><div class="bnav-label">Profile</div></div>
+    </div>
+</div>
+
+<script>
+    function toggleMenu() {
+        document.getElementById('sidebar').classList.toggle('open');
+        document.querySelector('.sidebar-overlay').classList.toggle('show');
+        document.querySelector('.hamburger').classList.toggle('open');
+    }
+</script>
+
+</body>
+</html>
