@@ -23,7 +23,7 @@
         .mobile-header {
             display: none; position: sticky; top: 0; z-index: 200;
             background: #0f0f18ee; border-bottom: 1px solid #1e1e2e;
-            padding: 14px 20px; align-items: center; justify-content: space-between;
+            padding: 14px 20px; padding-top: calc(14px + env(safe-area-inset-top, 0px)); align-items: center; justify-content: space-between;
             backdrop-filter: blur(10px);
         }
         .mobile-header .mobile-logo {
@@ -273,7 +273,7 @@
         .bottom-nav {
             display: none; position: fixed; bottom: 0; left: 0; right: 0;
             background: #0f0f18ee; border-top: 1px solid #1e1e2e;
-            padding: 8px 0 12px; z-index: 100; backdrop-filter: blur(10px);
+            padding: 8px 0 calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 100; backdrop-filter: blur(10px);
         }
         .bottom-nav-items { display: flex; justify-content: space-around; }
         .bnav-item { text-align: center; cursor: pointer; padding: 4px 8px; }

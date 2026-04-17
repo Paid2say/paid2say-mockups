@@ -232,7 +232,7 @@
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: #0f0f18ee; border-top: 1px solid #1e1e2e;
-            padding: 8px 0 12px; z-index: 100; backdrop-filter: blur(10px);
+            padding: 8px 0 calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 100; backdrop-filter: blur(10px);
         }
         .bottom-nav-items { display: flex; justify-content: space-around; }
         .bnav-item { text-align: center; cursor: pointer; padding: 4px 8px; }
