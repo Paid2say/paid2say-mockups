@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paid2Say — Wallet Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* Mobile Nav */
+        .mobile-header {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: #0f0f18;
+            border-bottom: 1px solid #1e1e2e;
+            padding: 14px 20px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mobile-header .mobile-logo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hamburger {
+            width: 32px; height: 32px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px;
+            cursor: pointer; background: none; border: none; padding: 4px;
+        }
+        .hamburger span { display: block; width: 22px; height: 2px; background: #e0e0e0; border-radius: 2px; transition: all 0.3s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .sidebar-overlay { display: none; position: fixed; top:0;left:0;right:0;bottom:0; background: rgba(0,0,0,0.6); z-index: 150; }
+        .sidebar-overlay.show { display: block; }
+
+        .layout { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 240px; background: #0f0f18; border-right: 1px solid #1e1e2e;
+            padding: 24px 0; flex-shrink: 0; transition: transform 0.3s ease;
+        }
+        .sidebar-logo {
+            font-size: 1.2rem; font-weight: 800; padding: 0 20px 24px;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .sidebar-item {
+            padding: 10px 20px; font-size: 0.88rem; color: #6b7280;
+            cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.2s;
+        }
+        .sidebar-item:hover { color: #e0e0e0; background: #1a1a2e; }
+        .sidebar-item.active { color: #00d4ff; background: #0d1b2a; border-right: 3px solid #00d4ff; }
+        .sidebar-section { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #3a3a5a; padding: 20px 20px 8px; }
+
+        .main { flex: 1; padding: 32px 40px; overflow-y: auto; }
+        .breadcrumb { font-size: 0.8rem; color: #4b5563; margin-bottom: 12px; }
+        .breadcrumb span { color: #00d4ff; }
+        .page-header { margin-bottom: 32px; }
+        .page-header h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
+        .page-header p { color: #6b7280; font-size: 0.9rem; }
+
+        /* Balance Card */
+        .balance-card {
+            background: linear-gradient(135deg, #0f172a, #1a1a2e, #16213e);
+            border: 1px solid #7b2ff744;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, #7b2ff710 0%, transparent 60%);
+        }
+        .balance-label { font-size: 0.85rem; color: #8892a4; margin-bottom: 8px; position: relative; }
+        .balance-amount {
+            font-size: 3rem; font-weight: 800; position: relative;
+            background: linear-gradient(135deg, #22c55e, #4ade80);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .balance-sub { font-size: 0.85rem; color: #6b7280; margin-top: 8px; position: relative; }
+
+        .balance-stats {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 16px; margin-top: 24px; position: relative;
+        }
+        .b-stat {
+            background: #0a0a0f44; border-radius: 10px; padding: 16px; text-align: center;
+        }
+        .b-stat .stat-num { font-size: 1.3rem; font-weight: 700; margin-bottom: 2px; }
+        .b-stat .stat-label { font-size: 0.75rem; color: #6b7280; }
+
+        /* Gauge */
+        .gauge-section { margin-bottom: 24px; }
+        .gauge-card {
+            background: #12121a; border: 1px solid #2a2a3a; border-radius: 14px; padding: 24px;
+        }
+        .gauge-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .gauge-header h3 { font-size: 1rem; }
+        .gauge-header .gauge-status {
+            font-size: 0.8rem; padding: 4px 12px; border-radius: 20px; font-weight: 600;
+        }
+        .status-healthy { background: #14532d; color: #4ade80; }
+        .status-low { background: #422006; color: #fbbf24; }
+        .status-critical { background: #450a0a; color: #fca5a5; }
+        .gauge-bar {
+            width: 100%; height: 16px; background: #2a2a3a; border-radius: 8px;
+            overflow: hidden; margin-bottom: 8px;
+        }
+        .gauge-fill {
+            height: 100%; border-radius: 8px; transition: width 0.5s;
+            background: linear-gradient(90deg, #f87171, #fbbf24, #22c55e);
+        }
+        .gauge-labels {
+            display: flex; justify-content: space-between; font-size: 0.75rem; color: #6b7280;
+        }
+        .gauge-info {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 12px; margin-top: 16px;
+        }
+        .g-info {
+            background: #1a1a2e; border-radius: 8px; padding: 12px; text-align: center;
+        }
+        .g-info .g-num { font-size: 1rem; font-weight: 600; margin-bottom: 2px; }
+        .g-info .g-label { font-size: 0.72rem; color: #6b7280; }
+
+        /* Quick Actions */
+        .actions-row {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 14px; margin-bottom: 24px;
+        }
+        .action-btn {
+            background: #12121a; border: 1px solid #2a2a3a; border-radius: 12px;
+            padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s;
+        }
+        .action-btn:hover { border-color: #7b2ff7; transform: translateY(-2px); }
+        .action-btn .a-icon { font-size: 1.8rem; margin-bottom: 8px; }
+        .action-btn .a-label { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+        .action-btn .a-desc { font-size: 0.75rem; color: #6b7280; }
+
+        /* ACH Settings */
+        .settings-card {
+            background: #12121a; border: 1px solid #2a2a3a; border-radius: 14px;
+            padding: 28px; margin-bottom: 24px;
+        }
+        .settings-card h3 { font-size: 1.1rem; margin-bottom: 4px; }
+        .settings-card .card-sub { font-size: 0.83rem; color: #6b7280; margin-bottom: 20px; }
+        .setting-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 0; border-bottom: 1px solid #1e1e2e;
+        }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-info h4 { font-size: 0.9rem; margin-bottom: 2px; }
+        .setting-info p { font-size: 0.78rem; color: #6b7280; }
+        .toggle {
+            width: 44px; height: 24px; background: #3a3a5a; border-radius: 12px;
+            position: relative; cursor: pointer; transition: background 0.2s; flex-shrink: 0;
+        }
+        .toggle.on { background: #22c55e; }
+        .toggle .toggle-dot {
+            width: 18px; height: 18px; background: white; border-radius: 50%;
+            position: absolute; top: 3px; left: 3px; transition: left 0.2s;
+        }
+        .toggle.on .toggle-dot { left: 23px; }
+        .bank-info {
+            background: #1a1a2e; border-radius: 10px; padding: 16px; margin-top: 16px;
+            display: flex; align-items: center; gap: 16px;
+        }
+        .bank-icon { font-size: 2rem; }
+        .bank-details .bank-name { font-size: 0.9rem; font-weight: 600; }
+        .bank-details .bank-acct { font-size: 0.8rem; color: #6b7280; }
+        .bank-change { font-size: 0.8rem; color: #7b2ff7; cursor: pointer; margin-left: auto; }
+
+        /* Transaction History */
+        .history-card {
+            background: #12121a; border: 1px solid #2a2a3a; border-radius: 14px; padding: 28px;
+        }
+        .history-card h3 { font-size: 1.1rem; margin-bottom: 4px; }
+        .history-card .card-sub { font-size: 0.83rem; color: #6b7280; margin-bottom: 20px; }
+        .history-tabs {
+            display: flex; gap: 8px; margin-bottom: 16px;
+        }
+        .h-tab {
+            padding: 6px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+            cursor: pointer; background: #1a1a2e; color: #6b7280; transition: all 0.2s;
+        }
+        .h-tab.active { background: #7b2ff7; color: white; }
+        .tx-row {
+            display: grid; grid-template-columns: auto 1fr auto auto;
+            gap: 14px; align-items: center; padding: 14px 0;
+            border-bottom: 1px solid #1e1e2e;
+        }
+        .tx-row:last-child { border-bottom: none; }
+        .tx-icon {
+            width: 36px; height: 36px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-size: 1rem;
+        }
+        .tx-icon.load { background: #14532d; }
+        .tx-icon.commission { background: #450a0a; }
+        .tx-icon.sub { background: #1e1b4b; }
+        .tx-icon.refund { background: #422006; }
+        .tx-info .tx-title { font-size: 0.88rem; font-weight: 500; }
+        .tx-info .tx-date { font-size: 0.75rem; color: #6b7280; }
+        .tx-amount { font-size: 0.95rem; font-weight: 600; text-align: right; }
+        .tx-amount.positive { color: #22c55e; }
+        .tx-amount.negative { color: #f87171; }
+        .tx-balance { font-size: 0.8rem; color: #6b7280; text-align: right; }
+
+        footer { text-align: center; padding: 40px; color: #3a3a5a; font-size: 0.8rem; }
+
+        @media (max-width: 900px) {
+            .mobile-header { display: flex; }
+            .sidebar { position: fixed; top:0;left:0;bottom:0; z-index:160; transform: translateX(-100%); overflow-y: auto; }
+            .sidebar.open { transform: translateX(0); }
+            .main { padding: 20px 16px; }
+            .balance-stats { grid-template-columns: repeat(2, 1fr); }
+            .actions-row { grid-template-columns: 1fr; }
+            .gauge-info { grid-template-columns: 1fr; }
+            .tx-row { grid-template-columns: auto 1fr auto; }
+            .tx-balance { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="mobile-header">
+    <div class="mobile-logo">Paid2Say</div>
+    <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</div>
+<div class="sidebar-overlay" onclick="toggleMenu()"></div>
+
+<div class="layout">
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-logo">Paid2Say</div>
+        <div class="sidebar-section">Dashboard</div>
+        <div class="sidebar-item">📊 Overview</div>
+        <div class="sidebar-item">📈 Analytics</div>
+        <div class="sidebar-section">Referrals</div>
+        <div class="sidebar-item">👥 My Affiliates</div>
+        <div class="sidebar-item">📋 Referral Log</div>
+        <div class="sidebar-item">✅ Validate</div>
+        <div class="sidebar-section">Money</div>
+        <div class="sidebar-item">💰 Commission Setup</div>
+        <div class="sidebar-item active">💳 Wallet</div>
+        <div class="sidebar-item">📑 Payouts</div>
+        <div class="sidebar-section">Settings</div>
+        <div class="sidebar-item">🏪 Business Profile</div>
+        <div class="sidebar-item">⚙️ Account</div>
+    </div>
+
+    <div class="main">
+        <div class="breadcrumb">Dashboard / Money / <span>Wallet</span></div>
+        <div class="page-header">
+            <h1>Commission Wallet</h1>
+            <p>Your pre-funded wallet that pays affiliates. Keep it funded — your salesforce depends on it.</p>
+        </div>
+
+        <!-- BALANCE CARD -->
+        <div class="balance-card">
+            <div class="balance-label">Available Balance</div>
+            <div class="balance-amount">$1,247.50</div>
+            <div class="balance-sub">Last recharge: April 14, 2026 · $200.00 via ACH</div>
+
+            <div class="balance-stats">
+                <div class="b-stat">
+                    <div class="stat-num" style="color:#22c55e">$3,840</div>
+                    <div class="stat-label">Total Loaded (All Time)</div>
+                </div>
+                <div class="b-stat">
+                    <div class="stat-num" style="color:#f87171">$2,543</div>
+                    <div class="stat-label">Total Commissions Paid</div>
+                </div>
+                <div class="b-stat">
+                    <div class="stat-num" style="color:#00d4ff">127</div>
+                    <div class="stat-label">Referrals Paid Out</div>
+                </div>
+                <div class="b-stat">
+                    <div class="stat-num" style="color:#fbbf24">~62</div>
+                    <div class="stat-label">Referrals Until Recharge</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WALLET GAUGE -->
+        <div class="gauge-section">
+            <div class="gauge-card">
+                <div class="gauge-header">
+                    <h3>💳 Wallet Health</h3>
+                    <span class="gauge-status status-healthy">● Healthy</span>
+                </div>
+                <div class="gauge-bar">
+                    <div class="gauge-fill" style="width: 62%;"></div>
+                </div>
+                <div class="gauge-labels">
+                    <span>🔴 Empty</span>
+                    <span>🟡 Auto-recharge at $50 (25%)</span>
+                    <span>🟢 Full ($200)</span>
+                </div>
+                <div class="gauge-info">
+                    <div class="g-info">
+                        <div class="g-num" style="color:#22c55e">$1,247.50</div>
+                        <div class="g-label">Current Balance</div>
+                    </div>
+                    <div class="g-info">
+                        <div class="g-num" style="color:#fbbf24">$50.00</div>
+                        <div class="g-label">Auto-Recharge Trigger</div>
+                    </div>
+                    <div class="g-info">
+                        <div class="g-num" style="color:#00d4ff">$200.00</div>
+                        <div class="g-label">Recharge Amount</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="actions-row">
+            <div class="action-btn" onclick="alert('Manual top-up (mockup)')">
+                <div class="a-icon">💰</div>
+                <div class="a-label">Add Funds</div>
+                <div class="a-desc">Manually top up your wallet via ACH</div>
+            </div>
+            <div class="action-btn" onclick="alert('Adjust recharge settings (mockup)')">
+                <div class="a-icon">🔄</div>
+                <div class="a-label">Adjust Recharge</div>
+                <div class="a-desc">Change auto-recharge amount or trigger</div>
+            </div>
+            <div class="action-btn" onclick="alert('Download statement (mockup)')">
+                <div class="a-icon">📄</div>
+                <div class="a-label">Download Statement</div>
+                <div class="a-desc">Export wallet history as PDF or CSV</div>
+            </div>
+        </div>
+
+        <!-- ACH SETTINGS -->
+        <div class="settings-card">
+            <h3>🏦 Payment Method</h3>
+            <div class="card-sub">Your connected bank account for wallet recharges and monthly subscription.</div>
+
+            <div class="bank-info">
+                <div class="bank-icon">🏦</div>
+                <div class="bank-details">
+                    <div class="bank-name">Chase Business Checking</div>
+                    <div class="bank-acct">Account ending in ••••4829 · Routing ••••0021</div>
+                </div>
+                <div class="bank-change">Change →</div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <h4>ACH Auto-Recharge</h4>
+                    <p>Automatically pull $200 when balance drops below $50</p>
+                </div>
+                <div class="toggle on" onclick="this.classList.toggle('on')">
+                    <div class="toggle-dot"></div>
+                </div>
+            </div>
+            <div class="setting-row">
+                <div class="setting-info">
+                    <h4>$49/month Subscription via ACH</h4>
+                    <p>Next charge: May 1, 2026</p>
+                </div>
+                <div class="toggle on" onclick="this.classList.toggle('on')">
+                    <div class="toggle-dot"></div>
+                </div>
+            </div>
+            <div class="setting-row">
+                <div class="setting-info">
+                    <h4>Low Balance Alerts</h4>
+                    <p>Email + push when wallet drops below recharge trigger</p>
+                </div>
+                <div class="toggle on" onclick="this.classList.toggle('on')">
+                    <div class="toggle-dot"></div>
+                </div>
+            </div>
+            <div class="setting-row">
+                <div class="setting-info">
+                    <h4>Weekly Wallet Summary</h4>
+                    <p>Email digest every Monday with balance and commission activity</p>
+                </div>
+                <div class="toggle on" onclick="this.classList.toggle('on')">
+                    <div class="toggle-dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRANSACTION HISTORY -->
+        <div class="history-card">
+            <h3>📜 Transaction History</h3>
+            <div class="card-sub">All wallet activity — loads, commissions, and subscription payments.</div>
+
+            <div class="history-tabs">
+                <div class="h-tab active">All</div>
+                <div class="h-tab" onclick="this.parentElement.querySelector('.active').classList.remove('active');this.classList.add('active')">Loads</div>
+                <div class="h-tab" onclick="this.parentElement.querySelector('.active').classList.remove('active');this.classList.add('active')">Commissions</div>
+                <div class="h-tab" onclick="this.parentElement.querySelector('.active').classList.remove('active');this.classList.add('active')">Subscription</div>
+            </div>
+
+            <div class="tx-row">
+                <div class="tx-icon commission">💸</div>
+                <div class="tx-info">
+                    <div class="tx-title">Commission — @maria_ref (Sarah Johnson)</div>
+                    <div class="tx-date">Apr 16, 2026 · 3:42 PM</div>
+                </div>
+                <div class="tx-amount negative">-$20.00</div>
+                <div class="tx-balance">$1,247.50</div>
+            </div>
+
+            <div class="tx-row">
+                <div class="tx-icon commission">💸</div>
+                <div class="tx-info">
+                    <div class="tx-title">Commission — @jake_tattoo (Mike Rivera)</div>
+                    <div class="tx-date">Apr 16, 2026 · 1:15 PM</div>
+                </div>
+                <div class="tx-amount negative">-$20.00</div>
+                <div class="tx-balance">$1,267.50</div>
+            </div>
+
+            <div class="tx-row">
+                <div class="tx-icon commission">💸</div>
+                <div class="tx-info">
+                    <div class="tx-title">Commission — @maria_ref (David Chen)</div>
+                    <div class="tx-date">Apr 15, 2026 · 5:30 PM</div>
+                </div>
+                <div class="tx-amount negative">-$35.00</div>
+                <div class="tx-balance">$1,287.50</div>
+            </div>
+
+            <div class="tx-row">
+                <div class="tx-icon load">💰</div>
+                <div class="tx-info">
+                    <div class="tx-title">ACH Auto-Recharge</div>
+                    <div class="tx-date">Apr 14, 2026 · 9:00 AM</div>
+                </div>
+                <div class="tx-amount positive">+$200.00</div>
+                <div class="tx-balance">$1,322.50</div>
+            </div>
+
+            <div class="tx-row">
+                <div class="tx-icon commission">💸</div>
+                <div class="tx-info">
+                    <div class="tx-title">Commission — @carlos_fit (Ana Martinez)</div>
+                    <div class="tx-date">Apr 14, 2026 · 2:20 PM</div>
+                </div>
+                <div class="tx-amount negative">-$20.00</div>
+                <div class="tx-balance">$1,122.50</div>
+            </div>
+
+            <div class="tx-row">
+                <div class="tx-icon sub">🔁</div>
+                <div class="tx-info">
+                    <div class="tx-title">Monthly Subscription — April 2026</div>
+                    <div class="tx-date">Apr 1, 2026 · 12:00 AM</div>
+                </div>
+                <div class="tx-amount negative">-$49.00</div>
+                <div class="tx-balance">$1,142.50</div>
+            </div>
+
+            <div class="tx-row">
+                <div class="tx-icon load">💰</div>
+                <div class="tx-info">
+                    <div class="tx-title">Manual Top-Up</div>
+                    <div class="tx-date">Mar 28, 2026 · 11:30 AM</div>
+                </div>
+                <div class="tx-amount positive">+$500.00</div>
+                <div class="tx-balance">$1,191.50</div>
+            </div>
+
+            <div class="tx-row">
+                <div class="tx-icon commission">💸</div>
+                <div class="tx-info">
+                    <div class="tx-title">Commission — @lisa_ink (Tommy Nguyen)</div>
+                    <div class="tx-date">Mar 27, 2026 · 4:10 PM</div>
+                </div>
+                <div class="tx-amount negative">-$20.00</div>
+                <div class="tx-balance">$691.50</div>
+            </div>
+
+            <div style="text-align: center; padding: 20px 0;">
+                <span style="font-size: 0.85rem; color: #7b2ff7; cursor: pointer;">View All Transactions →</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleMenu() {
+        document.getElementById('sidebar').classList.toggle('open');
+        document.querySelector('.sidebar-overlay').classList.toggle('show');
+        document.querySelector('.hamburger').classList.toggle('open');
+    }
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.addEventListener('click', () => { if (window.innerWidth <= 900) toggleMenu(); });
+    });
+</script>
+
+</body>
+</html>
