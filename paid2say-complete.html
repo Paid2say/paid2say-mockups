@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paid2Say — Complete Platform Overview</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* NAV */
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 40px;
+            background: #0a0a0fdd;
+            border-bottom: 1px solid #1e1e2e;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .nav-logo {
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-links { display: flex; gap: 24px; }
+        .nav-links a {
+            color: #8892a4;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: #e0e0e0; }
+        .nav-cta {
+            background: linear-gradient(135deg, #7b2ff7, #5b1fd7);
+            color: white !important;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 600 !important;
+        }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            padding: 100px 20px 80px;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 40%, #16213e 70%, #0a0a0f 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: 20%;
+            width: 60%;
+            height: 200%;
+            background: radial-gradient(ellipse, #7b2ff708 0%, transparent 60%);
+        }
+        .hero-badge {
+            display: inline-block;
+            background: #1a1a2e;
+            border: 1px solid #3a3a5a;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+            position: relative;
+            line-height: 1.15;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: #8892a4;
+            max-width: 600px;
+            margin: 0 auto 32px;
+            line-height: 1.6;
+            position: relative;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            position: relative;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #7b2ff7, #5b1fd7);
+            color: white;
+            padding: 14px 36px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: transform 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-secondary {
+            background: transparent;
+            color: #e0e0e0;
+            padding: 14px 36px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            border: 1px solid #3a3a5a;
+            cursor: pointer;
+        }
+
+        /* SECTIONS */
+        .section {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .section-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .section-header p {
+            color: #6b7280;
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .section-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            padding: 4px 12px;
+            border-radius: 6px;
+        }
+        .tag-blue { background: #172554; color: #60a5fa; }
+        .tag-purple { background: #1e1b4b; color: #a78bfa; }
+        .tag-gold { background: #422006; color: #fbbf24; }
+        .tag-green { background: #14532d; color: #4ade80; }
+        .tag-red { background: #450a0a; color: #fca5a5; }
+
+        /* DIVIDER */
+        .divider {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+        }
+        .divider hr { border: none; border-top: 1px solid #1e1e2e; }
+        .divider-label {
+            text-align: center;
+            margin-top: -11px;
+        }
+        .divider-label span {
+            background: #0a0a0f;
+            padding: 0 20px;
+            color: #3a3a5a;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* HOW IT WORKS */
+        .how-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+        .how-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .how-step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .how-num {
+            min-width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .num-purple { background: #7b2ff7; color: white; }
+        .num-green { background: #22c55e; color: white; }
+        .how-text h4 { font-size: 0.95rem; margin-bottom: 4px; }
+        .how-text p { font-size: 0.83rem; color: #8892a4; line-height: 1.5; }
+
+        /* AFFILIATE CARD */
+        .affiliate-section {
+            background: linear-gradient(180deg, #12121a, #0a0a0f);
+            border: 1px solid #2a2a3a;
+            border-radius: 16px;
+            padding: 40px;
+        }
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+        .earn-list { list-style: none; }
+        .earn-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #1e1e2e;
+            font-size: 0.9rem;
+        }
+        .earn-list li:last-child { border-bottom: none; }
+        .earn-label { color: #8892a4; }
+        .earn-val { font-weight: 600; }
+        .earn-val.blue { color: #00d4ff; }
+        .earn-val.green { color: #22c55e; }
+        .earn-val.gold { color: #ffd700; }
+
+        /* INDUSTRY BRACKETS */
+        .bracket-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 4px;
+        }
+        .bracket-table th {
+            text-align: left;
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 10px 16px;
+            font-weight: 600;
+        }
+        .bracket-table td {
+            background: #12121a;
+            padding: 14px 16px;
+            font-size: 0.88rem;
+        }
+        .bracket-table tr td:first-child { border-radius: 8px 0 0 8px; }
+        .bracket-table tr td:last-child { border-radius: 0 8px 8px 0; }
+        .cat-icon { margin-right: 6px; }
+        .cat-examples { font-size: 0.75rem; color: #6b7280; margin-top: 2px; }
+
+        /* WALLET */
+        .wallet-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .wallet-step {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px 24px;
+            text-align: center;
+            min-width: 160px;
+        }
+        .wallet-step .icon { font-size: 2rem; margin-bottom: 8px; }
+        .wallet-step .w-label { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+        .wallet-step .w-sub { font-size: 0.75rem; color: #6b7280; }
+        .wallet-arrow { font-size: 1.4rem; color: #3a3a5a; }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+        .feature-card {
+            background: #12121a;
+            border: 1px solid #1e1e2e;
+            border-radius: 10px;
+            padding: 18px;
+        }
+        .feature-card h4 { font-size: 0.9rem; margin-bottom: 6px; }
+        .feature-card p { font-size: 0.8rem; color: #6b7280; line-height: 1.5; }
+
+        /* LEGACY / VOICE IS EQUITY */
+        .legacy-hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #0a0a0f, #1a1a10, #0a0a0f);
+        }
+        .legacy-hero h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .legacy-hero p {
+            color: #8892a4;
+            max-width: 550px;
+            margin: 0 auto;
+            font-size: 1rem;
+        }
+
+        .legacy-card {
+            background: linear-gradient(180deg, #1a1a10, #12121a);
+            border: 1px solid #ffd70033;
+            border-radius: 16px;
+            padding: 40px;
+        }
+        .legacy-card h3 {
+            font-size: 1.2rem;
+            color: #ffd700;
+            margin-bottom: 12px;
+        }
+        .legacy-card p {
+            color: #8892a4;
+            line-height: 1.7;
+            font-size: 0.95rem;
+            margin-bottom: 14px;
+        }
+
+        /* Timeline */
+        .timeline {
+            display: flex;
+            align-items: flex-start;
+            margin: 30px 0;
+            position: relative;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 8%;
+            right: 8%;
+            height: 3px;
+            background: linear-gradient(90deg, #7b2ff7, #7b2ff7, #ffd700);
+        }
+        .tl-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        .tl-dot {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+        .tl-dot.gate { background: linear-gradient(135deg, #7b2ff7, #5b1fd7); color: white; border: 3px solid #7b2ff7; }
+        .tl-dot.year { background: #1a1a2e; border: 3px solid #5b1fd7; color: #a78bfa; }
+        .tl-dot.crown { background: linear-gradient(135deg, #ffd700, #ff8c00); color: #1a1a2e; border: 3px solid #ffd700; }
+        .tl-label { font-size: 0.85rem; font-weight: 600; }
+        .tl-sub { font-size: 0.73rem; color: #6b7280; margin-top: 2px; }
+
+        /* Locked Teaser */
+        .locked-preview {
+            background: #12121a;
+            border: 1px solid #2a2a3a;
+            border-radius: 14px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .locked-preview .blur-content {
+            filter: blur(5px);
+            user-select: none;
+        }
+        .locked-preview .overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10,10,15,0.75);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+        }
+        .overlay .lock-icon { font-size: 2.5rem; margin-bottom: 12px; }
+        .overlay h4 { font-size: 1.1rem; color: #ffd700; margin-bottom: 6px; }
+        .overlay p { color: #8892a4; font-size: 0.85rem; text-align: center; max-width: 350px; margin-bottom: 16px; }
+        .progress-wrap {
+            width: 260px;
+            height: 10px;
+            background: #2a2a3a;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7b2ff7, #ffd700);
+            border-radius: 10px;
+        }
+        .progress-label { font-size: 0.75rem; color: #6b7280; }
+
+        /* BANKING */
+        .banking-options {
+            display: grid;
+            gap: 14px;
+        }
+        .bank-option {
+            background: #12121a;
+            border: 1px solid #1e1e2e;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .bank-option h4 { font-size: 1rem; margin-bottom: 4px; }
+        .bank-option .desc { font-size: 0.85rem; color: #8892a4; line-height: 1.5; margin-bottom: 8px; }
+        .bank-option .pros { font-size: 0.8rem; color: #22c55e; }
+        .bank-option .cons { font-size: 0.8rem; color: #f87171; margin-top: 3px; }
+        .bank-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        /* REVENUE PROJECTIONS */
+        .rev-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 4px;
+            margin: 20px 0;
+        }
+        .rev-table th {
+            text-align: left;
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 10px 16px;
+        }
+        .rev-table td {
+            background: #12121a;
+            padding: 14px 16px;
+            font-size: 0.9rem;
+        }
+        .rev-table tr td:first-child { border-radius: 8px 0 0 8px; }
+        .rev-table tr td:last-child { border-radius: 0 8px 8px 0; }
+        .rev-highlight { color: #22c55e; font-weight: 700; }
+        .rev-gold { color: #ffd700; font-weight: 700; }
+
+        /* Year 5 Breakdown */
+        .y5-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 24px 0;
+        }
+        .y5-card {
+            background: #12121a;
+            border: 1px solid #1e1e2e;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .y5-card h4 { font-size: 0.9rem; margin-bottom: 4px; color: #8892a4; }
+        .y5-card .big-num {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+        .y5-card .note { font-size: 0.75rem; color: #6b7280; margin-top: 4px; }
+
+        /* SIGNUP AGREEMENTS */
+        .agreement-section {
+            background: #12121a;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #2a2a3a;
+        }
+        .agreement-section h3 {
+            font-size: 1.15rem;
+            margin-bottom: 20px;
+        }
+        .cb-row {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #1e1e2e;
+        }
+        .cb-row:last-of-type { border-bottom: none; }
+        .cb-box {
+            min-width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+        .cb-purple { border: 2px solid #7b2ff7; color: #7b2ff7; }
+        .cb-green { border: 2px solid #22c55e; color: #22c55e; }
+        .cb-content { font-size: 0.82rem; color: #8892a4; line-height: 1.5; }
+        .cb-content strong { color: #e0e0e0; }
+
+        .sig-bar {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #2a2a3a;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .sig-input {
+            flex: 1;
+            height: 42px;
+            background: #0a0a0f;
+            border: 1px solid #3a3a5a;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            color: #4b5563;
+            font-size: 0.83rem;
+        }
+        .sig-btn-purple {
+            background: linear-gradient(135deg, #7b2ff7, #5b1fd7);
+            color: white;
+            padding: 11px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            border: none;
+            cursor: pointer;
+        }
+        .sig-btn-green {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            padding: 11px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* VALUATION */
+        .valuation-card {
+            background: linear-gradient(135deg, #0f172a, #1a1a2e);
+            border: 1px solid #7b2ff733;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+        }
+        .valuation-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        .valuation-card .big {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 20px 0 10px;
+        }
+        .valuation-card .sub-val {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        .val-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 24px;
+        }
+        .val-item { text-align: center; }
+        .val-item .val-num { font-size: 1.3rem; font-weight: 700; }
+        .val-item .val-label { font-size: 0.75rem; color: #6b7280; margin-top: 2px; }
+
+        footer {
+            text-align: center;
+            padding: 50px;
+            color: #3a3a5a;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .how-grid, .two-col, .features-grid, .y5-grid, .val-breakdown { grid-template-columns: 1fr; flex-direction: column; }
+            .timeline { flex-direction: column; align-items: center; gap: 10px; }
+            .timeline::before { display: none; }
+            .hero h1 { font-size: 2.4rem; }
+            .wallet-flow { flex-direction: column; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <div class="nav-logo">Paid2Say</div>
+    <div class="nav-links">
+        <a href="#how">How It Works</a>
+        <a href="#affiliates">Affiliates</a>
+        <a href="#businesses">Businesses</a>
+        <a href="#legacy">Legacy</a>
+        <a href="#revenue">Projections</a>
+        <a href="#signup" class="nav-cta">Get Started</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-badge">🚀 The Future of Word-of-Mouth</div>
+    <h1>Get Paid to Talk.<br>Get Customers for Less.</h1>
+    <p>Paid2Say connects businesses with real people who refer real customers. Affiliates earn commissions. Businesses grow. Everyone wins.</p>
+    <div class="hero-buttons">
+        <a href="#signup" class="btn-primary">Become an Affiliate</a>
+        <a href="#businesses" class="btn-secondary">I'm a Business →</a>
+    </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="section" id="how">
+    <div class="section-header">
+        <span class="section-tag tag-blue">HOW IT WORKS</span>
+        <h2>Simple for Everyone</h2>
+        <p>Whether you're referring customers or receiving them — it takes minutes to start.</p>
+    </div>
+
+    <div class="how-grid">
+        <div class="how-column">
+            <h3>👤 For Affiliates</h3>
+            <div class="how-step">
+                <div class="how-num num-purple">1</div>
+                <div class="how-text">
+                    <h4>Sign up free</h4>
+                    <p>Create your account and pick businesses you want to represent from the marketplace.</p>
+                </div>
+            </div>
+            <div class="how-step">
+                <div class="how-num num-purple">2</div>
+                <div class="how-text">
+                    <h4>Refer people</h4>
+                    <p>Share your link, post on social, talk to friends. Every tracked referral that converts is money.</p>
+                </div>
+            </div>
+            <div class="how-step">
+                <div class="how-num num-purple">3</div>
+                <div class="how-text">
+                    <h4>Get paid</h4>
+                    <p>Commissions hit your Paid2Say balance automatically. Spend with your P2S card or cash out.</p>
+                </div>
+            </div>
+        </div>
+        <div class="how-column">
+            <h3>🏪 For Businesses</h3>
+            <div class="how-step">
+                <div class="how-num num-green">1</div>
+                <div class="how-text">
+                    <h4>Subscribe ($49/mo)</h4>
+                    <p>Get your dashboard, set your commission rate, and fund your wallet.</p>
+                </div>
+            </div>
+            <div class="how-step">
+                <div class="how-num num-green">2</div>
+                <div class="how-text">
+                    <h4>Affiliates promote you</h4>
+                    <p>Real people talk about your business. No ad agencies, no wasted spend.</p>
+                </div>
+            </div>
+            <div class="how-step">
+                <div class="how-num num-green">3</div>
+                <div class="how-text">
+                    <h4>Customers walk in</h4>
+                    <p>Tracked referrals become paying customers. You only pay commissions on actual sales.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="divider"><hr><div class="divider-label"><span>AFFILIATE PROGRAM</span></div></div>
+
+<!-- AFFILIATE DETAILS -->
+<div class="section" id="affiliates">
+    <div class="section-header">
+        <span class="section-tag tag-purple">AFFILIATES</span>
+        <h2>Your Voice Makes You Money</h2>
+        <p>You already recommend businesses you love. Now get paid for it.</p>
+    </div>
+
+    <div class="affiliate-section">
+        <div class="two-col">
+            <div>
+                <h3 style="margin-bottom: 16px; font-size: 1.1rem;">What You Earn</h3>
+                <ul class="earn-list">
+                    <li><span class="earn-label">Commission Rate</span><span class="earn-val blue">Set by business (minimums enforced)</span></li>
+                    <li><span class="earn-label">When You're Paid</span><span class="earn-val">After referral converts</span></li>
+                    <li><span class="earn-label">Payout Method</span><span class="earn-val green">P2S balance → Card or cash out</span></li>
+                    <li><span class="earn-label">Cost to Join</span><span class="earn-val green">Free</span></li>
+                    <li><span class="earn-label">Commission Level</span><span class="earn-val">Direct referrals only — no MLM</span></li>
+                </ul>
+            </div>
+            <div>
+                <h3 style="margin-bottom: 16px; font-size: 1.1rem;">How You Get Paid</h3>
+                <ul class="earn-list">
+                    <li><span class="earn-label">Paid2Say Card</span><span class="earn-val green">Spend anywhere — no fees</span></li>
+                    <li><span class="earn-label">Cash Out (Instant)</span><span class="earn-val">1.5% transfer fee</span></li>
+                    <li><span class="earn-label">Cash Out (Standard)</span><span class="earn-val">$0.25 flat — 1-3 days</span></li>
+                    <li><span class="earn-label">Keep in P2S</span><span class="earn-val green">$0 — stays in your balance</span></li>
+                    <li><span class="earn-label">Payout Minimum</span><span class="earn-val">$20 balance to cash out</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- INDUSTRY BRACKETS -->
+<div class="section" id="businesses">
+    <div class="section-header">
+        <span class="section-tag tag-green">BUSINESSES</span>
+        <h2>Commission Brackets by Industry</h2>
+        <p>Rates scale to your ticket size. Set your rate at or above the floor. Affiliates choose who to rep.</p>
+    </div>
+
+    <table class="bracket-table">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Avg Ticket</th>
+                <th>Commission Type</th>
+                <th>Floor</th>
+                <th>Wallet Min</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cat-icon">☕</span><strong>Micro-Ticket</strong><div class="cat-examples">Coffee shops, fast food, snack bars</div></td>
+                <td>Under $20</td>
+                <td>Flat per referral</td>
+                <td style="color:#22c55e">$1.00</td>
+                <td>$50</td>
+            </tr>
+            <tr>
+                <td><span class="cat-icon">🍽️</span><strong>Small-Ticket</strong><div class="cat-examples">Restaurants, salons, barbers</div></td>
+                <td>$20 – $100</td>
+                <td>% with $2 min</td>
+                <td style="color:#22c55e">$2.00</td>
+                <td>$100</td>
+            </tr>
+            <tr>
+                <td><span class="cat-icon">🎨</span><strong>Mid-Ticket</strong><div class="cat-examples">Tattoo shops, auto repair, med spas</div></td>
+                <td>$100 – $500</td>
+                <td>10% standard</td>
+                <td style="color:#22c55e">$10.00</td>
+                <td>$150</td>
+            </tr>
+            <tr>
+                <td><span class="cat-icon">🏠</span><strong>High-Ticket</strong><div class="cat-examples">Realtors, car dealers, contractors</div></td>
+                <td>$500+</td>
+                <td>Flat per deal (capped)</td>
+                <td style="color:#22c55e">$50.00</td>
+                <td>$500</td>
+            </tr>
+            <tr>
+                <td><span class="cat-icon">🏢</span><strong>Enterprise</strong><div class="cat-examples">Apartments, relocators, franchises</div></td>
+                <td>Varies</td>
+                <td>Tiered flat ($50–$2,000)</td>
+                <td style="color:#22c55e">$50.00</td>
+                <td>$500</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- WALLET SYSTEM -->
+<div class="section">
+    <div class="section-header">
+        <span class="section-tag tag-blue">WALLET SYSTEM</span>
+        <h2>Commission Wallet</h2>
+        <p>Businesses pre-fund. Commissions move internally. Minimal processing fees.</p>
+    </div>
+
+    <div class="wallet-flow">
+        <div class="wallet-step">
+            <div class="icon">🏪</div>
+            <div class="w-label">Business Loads Wallet</div>
+            <div class="w-sub">ACH auto-recharge — low fees</div>
+        </div>
+        <div class="wallet-arrow">→</div>
+        <div class="wallet-step">
+            <div class="icon">📊</div>
+            <div class="w-label">Internal Ledger</div>
+            <div class="w-sub">$0 to move money</div>
+        </div>
+        <div class="wallet-arrow">→</div>
+        <div class="wallet-step">
+            <div class="icon">👤</div>
+            <div class="w-label">Affiliate Balance</div>
+            <div class="w-sub">Spend via P2S card</div>
+        </div>
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <h4>🔄 ACH Auto-Recharge</h4>
+            <p>Wallet drops below 25%? ACH pulls from the business's bank account automatically. Lower fees than card processing. Covers wallet top-ups and the $49/month subscription.</p>
+        </div>
+        <div class="feature-card">
+            <h4>💳 Paid2Say Card</h4>
+            <p>Affiliates spend directly from their balance. No fees to spend. Cash out to bank? Small transfer fee applies.</p>
+        </div>
+        <div class="feature-card">
+            <h4>⏸️ Card Decline</h4>
+            <p>Referrals still tracked. Commissions pause until wallet refills. No data lost.</p>
+        </div>
+        <div class="feature-card">
+            <h4>🚪 Clean Exit</h4>
+            <p>Business leaves? Remaining wallet balance refunded minus pending commissions. No hostage money.</p>
+        </div>
+    </div>
+</div>
+
+<div class="divider"><hr><div class="divider-label"><span>LEGACY PROGRAM</span></div></div>
+
+<!-- YOUR VOICE IS YOUR EQUITY -->
+<div class="legacy-hero" id="legacy">
+    <span class="section-tag tag-gold">👑 LEGACY</span>
+    <h2>Your Voice Is Your Equity</h2>
+    <p>Top affiliates don't just earn commissions — they earn residuals. Keep getting paid when your referrals come back.</p>
+</div>
+
+<div class="section">
+    <div class="legacy-card">
+        <h3>What Is Legacy?</h3>
+        <p>Most programs pay you once and forget you exist. Paid2Say is different. Legacy affiliates earn residual commissions — when a customer you referred keeps coming back and spending, you keep getting paid. Same rate. Every time.</p>
+        <p><strong style="color: #ffd700;">You brought them in. You should benefit when they come back.</strong></p>
+    </div>
+</div>
+
+<!-- LEGACY PATH -->
+<div class="section">
+    <h3 style="text-align: center; margin-bottom: 8px;">The Path to Residual Income</h3>
+    <p style="text-align: center; color: #6b7280; margin-bottom: 30px; font-size: 0.9rem;">Earn Legacy through consistent performance. No shortcuts.</p>
+
+    <div class="timeline">
+        <div class="tl-step">
+            <div class="tl-dot gate">50</div>
+            <div class="tl-label" style="color:#a78bfa">Gateway</div>
+            <div class="tl-sub">Details unlock</div>
+        </div>
+        <div class="tl-step">
+            <div class="tl-dot year">Y1</div>
+            <div class="tl-label">Year 1</div>
+            <div class="tl-sub">100 referrals total</div>
+        </div>
+        <div class="tl-step">
+            <div class="tl-dot year">Y2</div>
+            <div class="tl-label">Year 2</div>
+            <div class="tl-sub">100 referrals</div>
+        </div>
+        <div class="tl-step">
+            <div class="tl-dot year">Y3</div>
+            <div class="tl-label">Year 3</div>
+            <div class="tl-sub">100 referrals</div>
+        </div>
+        <div class="tl-step">
+            <div class="tl-dot crown">👑</div>
+            <div class="tl-label" style="color:#ffd700; font-weight:700;">Legacy</div>
+            <div class="tl-sub">36/yr to maintain</div>
+        </div>
+    </div>
+
+    <!-- LEGACY DETAILS - FULLY VISIBLE -->
+    <div style="margin-top: 30px;">
+        <div class="features-grid">
+            <div class="feature-card" style="border-color: #ffd70033;">
+                <h4>🔓 50-Referral Gateway</h4>
+                <p>Your first 50 referrals count toward Year 1's 100. This milestone proves you're serious and puts you on the Legacy track.</p>
+            </div>
+            <div class="feature-card" style="border-color: #ffd70033;">
+                <h4>💵 Same Commission Rate</h4>
+                <p>Residuals pay the exact same rate as standard commissions. A sale is a sale — whether it's their first visit or their fiftieth.</p>
+            </div>
+            <div class="feature-card" style="border-color: #ffd70033;">
+                <h4>🛡️ One Grace Year</h4>
+                <p>Drop below 36 referrals one year? No penalty. Life happens. Your residuals stay active.</p>
+            </div>
+            <div class="feature-card" style="border-color: #ffd70033;">
+                <h4>⚠️ Probation</h4>
+                <p>Two consecutive years below 36? Residuals pause. Account enters probation in the background.</p>
+            </div>
+            <div class="feature-card" style="border-color: #ffd70033;">
+                <h4>🔄 Re-Qualify</h4>
+                <p>Hit 100 referrals in 3 of the next 4 years to restore Legacy status and reactivate residuals.</p>
+            </div>
+            <div class="feature-card" style="border-color: #ffd70033;">
+                <h4>📋 Direct Referrals Only</h4>
+                <p>You earn on clients YOU brought in. One level deep. No downstream chains, no MLM. You eat what you kill.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="divider"><hr><div class="divider-label"><span>BANKING & INFRASTRUCTURE</span></div></div>
+
+<!-- BANKING -->
+<div class="section">
+    <div class="section-header">
+        <span class="section-tag tag-blue">BANKING</span>
+        <h2>How the Money Moves</h2>
+        <p>Cash App-style internal ledger. Built on banking-as-a-service infrastructure.</p>
+    </div>
+
+    <div class="banking-options">
+        <div class="bank-option">
+            <span class="bank-tag tag-green">✅ RECOMMENDED</span>
+            <h4>Stripe Treasury + Stripe Issuing</h4>
+            <div class="desc">FDIC-insured accounts (via Goldman Sachs / Evolve Bank) embedded in the platform. Virtual + physical branded Paid2Say cards. This is how Cash App, Shopify Balance, and Lyft payouts work.</div>
+            <div class="pros">✓ FDIC insured · ✓ Virtual & physical cards · ✓ Internal transfers free · ✓ Compliance handled</div>
+            <div class="cons">✗ Requires Stripe approval · ✗ Revenue share on interchange</div>
+        </div>
+        <div class="bank-option">
+            <span class="bank-tag" style="background:#1e293b;color:#94a3b8;">ALTERNATIVE</span>
+            <h4>Unit (Banking-as-a-Service)</h4>
+            <div class="desc">Purpose-built BaaS for fintechs. Real bank accounts + debit cards via partner banks. Designed specifically for marketplace platforms like Paid2Say.</div>
+            <div class="pros">✓ Built for this use case · ✓ White-label cards · ✓ ACH + book transfers</div>
+            <div class="cons">✗ Monthly platform fees · ✗ Smaller ecosystem</div>
+        </div>
+        <div class="bank-option">
+            <span class="bank-tag tag-gold">FUTURE PHASE</span>
+            <h4>Money Transmitter License (MTL)</h4>
+            <div class="desc">At 100K+ users, apply for your own license. Full control, no revenue share. $500K-$2M+ setup, 12-18 months. Use BaaS partners until then.</div>
+            <div class="pros">✓ Full control · ✓ Maximum margins</div>
+            <div class="cons">✗ Expensive · ✗ Heavy compliance burden</div>
+        </div>
+    </div>
+</div>
+
+<div class="divider"><hr><div class="divider-label"><span>REVENUE PROJECTIONS</span></div></div>
+
+<!-- REVENUE PROJECTIONS -->
+<div class="section" id="revenue">
+    <div class="section-header">
+        <span class="section-tag tag-green">PROJECTIONS</span>
+        <h2>Revenue Growth Model</h2>
+        <p>Conservative to aggressive projections based on subscription + fees + ecosystem revenue.</p>
+    </div>
+
+    <table class="rev-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Businesses</th>
+                <th>Core Revenue</th>
+                <th>Total w/ Ecosystem</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Year 1</strong><div class="cat-examples">Launch & grind</div></td>
+                <td>200 – 1,000</td>
+                <td>$118K – $588K</td>
+                <td class="rev-highlight">$118K – $588K</td>
+            </tr>
+            <tr>
+                <td><strong>Year 2</strong><div class="cat-examples">Traction & flywheel</div></td>
+                <td>800 – 5,000</td>
+                <td>$570K – $3.5M</td>
+                <td class="rev-highlight">$570K – $3.5M</td>
+            </tr>
+            <tr>
+                <td><strong>Year 3</strong><div class="cat-examples">Scale</div></td>
+                <td>2,000 – 15,000</td>
+                <td>$1.4M – $10M</td>
+                <td class="rev-highlight">$1.4M – $10M+</td>
+            </tr>
+            <tr style="background: linear-gradient(90deg, #1a1a1000, #1a1a10);">
+                <td><strong style="color:#ffd700">Year 5</strong><div class="cat-examples" style="color:#8b7500">Full ecosystem</div></td>
+                <td style="color:#ffd700">30,000 – 50,000+</td>
+                <td style="color:#ffd700">$27M+</td>
+                <td class="rev-gold" style="font-size:1.05rem;">$43M – $59M+</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Year 5 Breakdown -->
+    <h3 style="text-align:center; margin: 40px 0 8px; color: #ffd700;">Year 5 Revenue Streams</h3>
+    <p style="text-align: center; color: #6b7280; margin-bottom: 24px; font-size: 0.85rem;">Core platform + expanded ecosystem at 40,000 businesses</p>
+
+    <div class="y5-grid">
+        <div class="y5-card">
+            <h4>Subscriptions ($49/mo)</h4>
+            <div class="big" style="color:#00d4ff">$23.5M</div>
+            <div class="note">40,000 businesses × $49 × 12 months</div>
+        </div>
+        <div class="y5-card">
+            <h4>Processing & Transfer Fees</h4>
+            <div class="big" style="color:#22c55e">$3.8M</div>
+            <div class="note">Wallet loads + cash-out fees + card interchange</div>
+        </div>
+        <div class="y5-card">
+            <h4>In-App & Social Advertising</h4>
+            <div class="big" style="color:#a78bfa">$8M – $15M</div>
+            <div class="note">Promoted listings, social feed ads, featured placements</div>
+        </div>
+        <div class="y5-card">
+            <h4>Premium Tiers & Enterprise</h4>
+            <div class="big" style="color:#fbbf24">$7M – $15M</div>
+            <div class="note">Enhanced dashboards, franchise deals, white-label licensing</div>
+        </div>
+    </div>
+
+    <!-- Valuation -->
+    <div class="valuation-card" style="margin-top: 30px;">
+        <h2>Estimated Company Valuation — Year 5</h2>
+        <div class="sub-val">Based on 5-8x annual revenue (standard tech SaaS multiples)</div>
+        <div class="big">$200M – $400M+</div>
+        <div class="sub-val">Potential valuation range</div>
+        <div class="val-breakdown">
+            <div class="val-item">
+                <div class="val-num" style="color:#00d4ff">40K+</div>
+                <div class="val-label">Businesses</div>
+            </div>
+            <div class="val-item">
+                <div class="val-num" style="color:#22c55e">$43-59M</div>
+                <div class="val-label">Annual Revenue</div>
+            </div>
+            <div class="val-item">
+                <div class="val-num" style="color:#a78bfa">60-70%</div>
+                <div class="val-label">Profit Margins</div>
+            </div>
+            <div class="val-item">
+                <div class="val-num" style="color:#ffd700">100K+</div>
+                <div class="val-label">Active Affiliates</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="divider"><hr><div class="divider-label"><span>SIGNUP AGREEMENTS</span></div></div>
+
+<!-- AFFILIATE AGREEMENT -->
+<div class="section" id="signup">
+    <div class="section-header">
+        <span class="section-tag tag-purple">AFFILIATE</span>
+        <h2>Affiliate Agreement</h2>
+        <p>Review and accept all terms to activate your account.</p>
+    </div>
+
+    <div class="agreement-section">
+        <h3>📋 Program Terms</h3>
+        <div class="cb-row">
+            <div class="cb-box cb-purple">✓</div>
+            <div class="cb-content"><strong>Platform Role & Liability:</strong> Paid2Say connects affiliates with businesses. Paid2Say is not responsible for unpaid commissions due to a business's insufficient wallet funds.</div>
+        </div>
+        <div class="cb-row">
+            <div class="cb-box cb-purple">✓</div>
+            <div class="cb-content"><strong>Independent Contractor:</strong> I am an independent contractor. Not an employee of Paid2Say or any business on the platform.</div>
+        </div>
+        <div class="cb-row">
+            <div class="cb-box cb-purple">✓</div>
+            <div class="cb-content"><strong>Commission Structure:</strong> Rates are set by each business within industry minimums. Paid2Say does not guarantee any specific rate.</div>
+        </div>
+        <div class="cb-row">
+            <div class="cb-box cb-purple">✓</div>
+            <div class="cb-content"><strong>Residual Conditions:</strong> Legacy status requires 3 consecutive years of 100+ referrals after the 50-referral gateway. Maintenance of 36/year required to keep residuals active.</div>
+        </div>
+        <div class="cb-row">
+            <div class="cb-box cb-purple">✓</div>
+            <div class="cb-content"><strong>Tax Responsibility:</strong> I am responsible for reporting and paying all taxes. 1099-NEC issued for earnings over $600/year.</div>
+        </div>
+        <div class="cb-row">
+            <div class="cb-box cb-purple">✓</div>
+            <div class="cb-content"><strong>Business Departure:</strong> If a business leaves Paid2Say or closes, all associated commissions end immediately.</div>
+        </div>
+        <div class="cb-row">
+            <div class="cb-box cb-purple">✓</div>
+            <div class="cb-content"><strong>Wallet Insufficiency:</strong> If a business wallet is empty, referrals are tracked but commissions pause. Paid2Say has no obligation to cover the gap.</div>
+        </div>
+        <div class="cb-row">
+            <div class="cb-box cb-purple">✓</div>
+            <div class="cb-content"><strong>Platform Changes:</strong> Paid2Say may modify terms with reasonable notice. Continued use constitutes acceptance.</div>
+        </div>
+        <div class="cb-row">
+            <div class="cb-box cb-purple">✓</div>
+            <div class="cb-content"><strong>Release of Liability:</strong> I release Paid2Say from any claims, damages, or losses arising from participation in the affiliate program.</div>
+        </div>
+        <div class="sig-bar">
+            <div class="sig-input">Electronic Signature: Type your full legal name</div>
+            <button class="sig-btn-purple">Create Account →</button>
+        </div>
+    </div>
+</div>
+
+<!-- BUSINESS AGREEMENT -->
+<div class="section">
+    <div class="section-header">
+        <span class="section-tag tag-green">BUSINESS</span>
+        <h2>Business Agreement</h2>
+        <p>Review and accept all vendor terms to activate your dashboard.</p>
+    </div>
+
+    <div class="agreement-section" style="border-color: #22c55e22;">
+        <h3>🏪 Vendor Terms</h3>
+        <div class="cb-row">
+            <div class="cb-box cb-green">✓</div>
+            <div class="cb-content"><strong>Wallet Funding:</strong> I agree to maintain a funded commission wallet at or above the minimum for my industry bracket and authorize auto-recharge via card on file.</div>
+        </div>
+        <div class="cb-row">
+            <div class="cb-box cb-green">✓</div>
+            <div class="cb-content"><strong>Commission Commitment:</strong> I will honor my set commission rate at or above the industry floor. Rate changes require 30-day notice to active affiliates.</div>
+        </div>
+        <div class="cb-row">
+            <div class="cb-box cb-green">✓</div>
+            <div class="cb-content"><strong>Monthly Subscription:</strong> I agree to the $49/month platform fee. This is separate from commission wallet funds.</div>
+        </div>
+        <div class="cb-row">
+            <div class="cb-box cb-green">✓</div>
+            <div class="cb-content"><strong>Exit Terms:</strong> Leaving Paid2Say forfeits my affiliate salesforce connection, dashboard data, and momentum. Remaining wallet balance refunded minus pending commissions.</div>
+        </div>
+        <div class="cb-row">
+            <div class="cb-box cb-green">✓</div>
+            <div class="cb-content"><strong>Referral Validation:</strong> I will process and validate referrals in good faith. Habitual denial of valid referrals may result in account suspension.</div>
+        </div>
+        <div class="cb-row">
+            <div class="cb-box cb-green">✓</div>
+            <div class="cb-content"><strong>Platform Terms & Liability:</strong> Paid2Say may update features and terms with notice. Paid2Say is not liable for affiliate performance or referral quality.</div>
+        </div>
+        <div class="sig-bar">
+            <div class="sig-input">Authorized Signer: Full legal name & title</div>
+            <button class="sig-btn-green">Activate Dashboard →</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    PAID2SAY — Complete Platform Overview · Internal Mockup · Not for Public Distribution · v0.1<br>
+    <span style="color: #2a2a3a; font-size: 0.7rem;">Built with 🐺</span>
+</footer>
+
+</body>
+</html>

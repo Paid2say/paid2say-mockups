@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paid2Say — Become an Affiliate</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        .hero {
+            text-align: center;
+            padding: 80px 20px 50px;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: #8892a4;
+            max-width: 550px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+        .hero-cta {
+            display: inline-block;
+            background: linear-gradient(135deg, #7b2ff7, #00d4ff);
+            color: white;
+            padding: 14px 40px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+        .hero-cta:hover { transform: scale(1.03); }
+
+        .section { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        .section h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .section .sub {
+            color: #6b7280;
+            margin-bottom: 28px;
+            font-size: 0.95rem;
+        }
+
+        /* How It Works */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .step {
+            background: #12121a;
+            border: 1px solid #2a2a3a;
+            border-radius: 14px;
+            padding: 28px 24px;
+            text-align: center;
+        }
+        .step .num {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7b2ff7, #5b1fd7);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .step h3 { font-size: 1rem; margin-bottom: 8px; }
+        .step p { font-size: 0.85rem; color: #8892a4; line-height: 1.5; }
+
+        /* What You Earn */
+        .earn-card {
+            background: #12121a;
+            border: 1px solid #2a2a3a;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 20px;
+        }
+        .earn-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #1e1e2e;
+        }
+        .earn-row:last-child { border-bottom: none; }
+        .earn-label { color: #8892a4; font-size: 0.9rem; }
+        .earn-value { font-weight: 600; font-size: 0.95rem; }
+        .earn-value.highlight { color: #00d4ff; }
+        .earn-value.green { color: #22c55e; }
+
+        /* Teaser Banner */
+        .teaser {
+            background: linear-gradient(135deg, #1a1a10, #12121a);
+            border: 1px solid #ffd70033;
+            border-radius: 14px;
+            padding: 28px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 40px;
+        }
+        .teaser-text h3 {
+            font-size: 1.1rem;
+            color: #ffd700;
+            margin-bottom: 6px;
+        }
+        .teaser-text p {
+            font-size: 0.85rem;
+            color: #8892a4;
+            line-height: 1.5;
+        }
+        .teaser-link {
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            color: #1a1a2e;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        /* Agreement Section */
+        .agreement-card {
+            background: #12121a;
+            border: 1px solid #2a2a3a;
+            border-radius: 16px;
+            padding: 32px;
+        }
+        .checkbox-row {
+            display: flex;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid #1e1e2e;
+        }
+        .checkbox-row:last-of-type { border-bottom: none; }
+        .cb {
+            min-width: 20px;
+            height: 20px;
+            border: 2px solid #3a3a5a;
+            border-radius: 4px;
+            margin-top: 2px;
+        }
+        .cb-text { font-size: 0.82rem; color: #8892a4; line-height: 1.5; }
+        .cb-text strong { color: #e0e0e0; }
+
+        .signup-bar {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #2a2a3a;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .sig-input {
+            flex: 1;
+            height: 44px;
+            background: #0a0a0f;
+            border: 1px solid #3a3a5a;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            color: #4b5563;
+            font-size: 0.85rem;
+        }
+        .signup-btn {
+            background: linear-gradient(135deg, #7b2ff7, #5b1fd7);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 50px 20px;
+            color: #3a3a5a;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 700px) {
+            .steps { grid-template-columns: 1fr; }
+            .teaser { flex-direction: column; text-align: center; }
+            .hero h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+    <h1>Get Paid to Talk</h1>
+    <p>Refer customers to businesses you believe in. Earn commission on every sale. It's that simple.</p>
+    <a href="#signup" class="hero-cta">Become an Affiliate →</a>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="section">
+    <h2>How It Works</h2>
+    <p class="sub">Three steps. No gimmicks.</p>
+
+    <div class="steps">
+        <div class="step">
+            <div class="num">1</div>
+            <h3>Sign Up</h3>
+            <p>Create your free affiliate account. Pick the businesses you want to represent from our marketplace.</p>
+        </div>
+        <div class="step">
+            <div class="num">2</div>
+            <h3>Refer</h3>
+            <p>Share your unique link. Talk about the businesses you love. Every tracked referral that converts is money.</p>
+        </div>
+        <div class="step">
+            <div class="num">3</div>
+            <h3>Get Paid</h3>
+            <p>Commissions hit your Paid2Say balance automatically. Spend with your P2S card or cash out anytime.</p>
+        </div>
+    </div>
+</div>
+
+<!-- WHAT YOU EARN -->
+<div class="section">
+    <h2>What You Earn</h2>
+    <p class="sub">Commission rates are set by each business. Here's how it breaks down.</p>
+
+    <div class="earn-card">
+        <div class="earn-row">
+            <span class="earn-label">Commission Rate</span>
+            <span class="earn-value highlight">Set by business (industry minimums enforced)</span>
+        </div>
+        <div class="earn-row">
+            <span class="earn-label">When You Get Paid</span>
+            <span class="earn-value">Commissions credited after referral converts</span>
+        </div>
+        <div class="earn-row">
+            <span class="earn-label">Payout Method</span>
+            <span class="earn-value green">Paid2Say balance → P2S Card or cash out</span>
+        </div>
+        <div class="earn-row">
+            <span class="earn-label">Cost to Join</span>
+            <span class="earn-value green">Free</span>
+        </div>
+        <div class="earn-row">
+            <span class="earn-label">Who You Represent</span>
+            <span class="earn-value">Your choice — pick from the marketplace</span>
+        </div>
+        <div class="earn-row">
+            <span class="earn-label">Commission Level</span>
+            <span class="earn-value">Direct referrals only — one level, no MLM</span>
+        </div>
+    </div>
+
+    <!-- LEGACY TEASER -->
+    <div class="teaser">
+        <div class="teaser-text">
+            <h3>👑 Your Voice Is Your Equity</h3>
+            <p>Consistent affiliates can unlock residual commissions — getting paid on returning clients you originally referred. Hit 50 referrals to learn more.</p>
+        </div>
+        <a href="voice-equity.html" class="teaser-link">Learn More →</a>
+    </div>
+</div>
+
+<!-- AGREEMENT -->
+<div class="section" id="signup">
+    <h2>Affiliate Agreement</h2>
+    <p class="sub">Review and accept to activate your account.</p>
+
+    <div class="agreement-card">
+        <div class="checkbox-row">
+            <div class="cb"></div>
+            <div class="cb-text"><strong>Platform Role:</strong> I understand Paid2Say connects affiliates with businesses. Paid2Say is not responsible for unpaid commissions due to a business's insufficient funds.</div>
+        </div>
+        <div class="checkbox-row">
+            <div class="cb"></div>
+            <div class="cb-text"><strong>Independent Contractor:</strong> I am an independent contractor, not an employee of Paid2Say or any business on the platform.</div>
+        </div>
+        <div class="checkbox-row">
+            <div class="cb"></div>
+            <div class="cb-text"><strong>Commission Rates:</strong> Rates are set by each business within industry minimums. Paid2Say does not guarantee any specific rate.</div>
+        </div>
+        <div class="checkbox-row">
+            <div class="cb"></div>
+            <div class="cb-text"><strong>Tax Responsibility:</strong> I am responsible for reporting and paying taxes on all earnings. A 1099-NEC will be issued for earnings over $600/year.</div>
+        </div>
+        <div class="checkbox-row">
+            <div class="cb"></div>
+            <div class="cb-text"><strong>Business Changes:</strong> If a business leaves Paid2Say or closes, all associated commissions end. No back-pay or future claims.</div>
+        </div>
+        <div class="checkbox-row">
+            <div class="cb"></div>
+            <div class="cb-text"><strong>Platform Terms:</strong> Paid2Say may update features, fees, and terms with reasonable notice. Continued use constitutes acceptance.</div>
+        </div>
+        <div class="checkbox-row">
+            <div class="cb"></div>
+            <div class="cb-text"><strong>Release of Liability:</strong> I release Paid2Say from any claims, damages, or losses arising from my participation in the affiliate program.</div>
+        </div>
+
+        <div class="signup-bar">
+            <div class="sig-input">Electronic Signature: Type your full legal name</div>
+            <button class="signup-btn">Create Account →</button>
+        </div>
+    </div>
+</div>
+
+<footer>PAID2SAY — Internal Mockup · Not for Public Distribution · v0.1</footer>
+
+</body>
+</html>

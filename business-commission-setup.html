@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paid2Say — Business Commission Setup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 240px;
+            background: #0f0f18;
+            border-right: 1px solid #1e1e2e;
+            padding: 24px 0;
+            flex-shrink: 0;
+        }
+        .sidebar-logo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            padding: 0 20px 24px;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .sidebar-item {
+            padding: 10px 20px;
+            font-size: 0.88rem;
+            color: #6b7280;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+        .sidebar-item:hover { color: #e0e0e0; background: #1a1a2e; }
+        .sidebar-item.active {
+            color: #00d4ff;
+            background: #0d1b2a;
+            border-right: 3px solid #00d4ff;
+        }
+        .sidebar-section {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #3a3a5a;
+            padding: 20px 20px 8px;
+        }
+
+        /* Main */
+        .main {
+            flex: 1;
+            padding: 32px 40px;
+            overflow-y: auto;
+        }
+        .page-header {
+            margin-bottom: 32px;
+        }
+        .page-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .page-header p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        .breadcrumb {
+            font-size: 0.8rem;
+            color: #4b5563;
+            margin-bottom: 12px;
+        }
+        .breadcrumb span { color: #00d4ff; }
+
+        /* Cards */
+        .card {
+            background: #12121a;
+            border: 1px solid #2a2a3a;
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+        .card .card-sub {
+            font-size: 0.83rem;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .form-hint {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+        .input-field {
+            width: 100%;
+            background: #0a0a0f;
+            border: 1px solid #3a3a5a;
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: #e0e0e0;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-field:focus { border-color: #7b2ff7; }
+        .input-prefix {
+            display: flex;
+            align-items: center;
+        }
+        .input-prefix .prefix {
+            background: #1a1a2e;
+            border: 1px solid #3a3a5a;
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            padding: 12px 14px;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        .input-prefix .input-field {
+            border-radius: 0 8px 8px 0;
+        }
+
+        select.input-field {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+            cursor: pointer;
+        }
+
+        /* Slider */
+        .slider-wrapper {
+            margin: 12px 0;
+        }
+        .slider-track {
+            position: relative;
+            height: 8px;
+            background: #2a2a3a;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .slider-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7b2ff7, #00d4ff);
+            border-radius: 4px;
+            transition: width 0.15s;
+        }
+        .slider-thumb {
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: -7px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            cursor: grab;
+            transition: left 0.15s;
+        }
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: #4b5563;
+        }
+        .slider-value {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 8px 0;
+            transition: color 0.2s;
+        }
+
+        /* Range Input (real functional slider) */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #2a2a3a;
+            border-radius: 4px;
+            outline: none;
+            margin: 12px 0;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            cursor: grab;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        /* Toggle */
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #1e1e2e;
+        }
+        .toggle-row:last-child { border-bottom: none; }
+        .toggle-info h4 { font-size: 0.9rem; margin-bottom: 2px; }
+        .toggle-info p { font-size: 0.78rem; color: #6b7280; }
+        .toggle {
+            width: 44px;
+            height: 24px;
+            background: #3a3a5a;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+        .toggle.on { background: #22c55e; }
+        .toggle .toggle-dot {
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: left 0.2s;
+        }
+        .toggle.on .toggle-dot { left: 23px; }
+
+        /* Commission Type Selector */
+        .type-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .type-option {
+            background: #1a1a2e;
+            border: 2px solid #2a2a3a;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .type-option:hover { border-color: #3a3a5a; }
+        .type-option.selected { border-color: #7b2ff7; background: #1e1b4b; }
+        .type-option .type-icon { font-size: 1.5rem; margin-bottom: 6px; }
+        .type-option .type-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
+        .type-option .type-desc { font-size: 0.72rem; color: #6b7280; }
+
+        /* Preview Panel */
+        .preview-panel {
+            background: linear-gradient(135deg, #0f172a, #12121a);
+            border: 1px solid #7b2ff733;
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+        .preview-panel h3 {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            color: #00d4ff;
+        }
+        .preview-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #1e1e2e;
+            font-size: 0.88rem;
+        }
+        .preview-row:last-child { border-bottom: none; }
+        .preview-label { color: #8892a4; }
+        .preview-value { font-weight: 600; }
+        .preview-value.green { color: #22c55e; }
+        .preview-value.gold { color: #ffd700; }
+        .preview-value.blue { color: #00d4ff; }
+        .preview-value.red { color: #f87171; }
+
+        /* Affiliate Preview Card */
+        .affiliate-preview {
+            background: #1a1a2e;
+            border: 1px solid #2a2a3a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .affiliate-preview h4 {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+        .ap-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .ap-avatar {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #7b2ff7, #00d4ff);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        .ap-name { font-weight: 600; font-size: 0.95rem; }
+        .ap-category { font-size: 0.8rem; color: #6b7280; }
+        .ap-commission {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #12121a;
+            border-radius: 8px;
+            padding: 14px;
+        }
+        .ap-commission .comm-label { font-size: 0.8rem; color: #8892a4; }
+        .ap-commission .comm-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #22c55e;
+        }
+
+        /* Warning */
+        .warning-box {
+            background: #451a0333;
+            border: 1px solid #f8717133;
+            border-radius: 10px;
+            padding: 14px 18px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-top: 16px;
+        }
+        .warning-box .warn-icon { font-size: 1.1rem; }
+        .warning-box p { font-size: 0.8rem; color: #fca5a5; line-height: 1.4; }
+
+        /* Tip */
+        .tip-box {
+            background: #14532d22;
+            border: 1px solid #22c55e33;
+            border-radius: 10px;
+            padding: 14px 18px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-top: 16px;
+        }
+        .tip-box .tip-icon { font-size: 1.1rem; }
+        .tip-box p { font-size: 0.8rem; color: #86efac; line-height: 1.4; }
+
+        /* Button */
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #7b2ff7, #5b1fd7);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-outline {
+            background: transparent;
+            color: #8892a4;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid #3a3a5a;
+            cursor: pointer;
+        }
+
+        /* Two Column Layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* Wallet Config */
+        .wallet-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: #1a1a2e;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-top: 12px;
+        }
+        .wallet-gauge {
+            width: 100%;
+            height: 10px;
+            background: #2a2a3a;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .wallet-gauge-fill {
+            height: 100%;
+            border-radius: 5px;
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #3a3a5a;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-logo">Paid2Say</div>
+        <div class="sidebar-section">Dashboard</div>
+        <div class="sidebar-item">📊 Overview</div>
+        <div class="sidebar-item">📈 Analytics</div>
+        <div class="sidebar-section">Referrals</div>
+        <div class="sidebar-item">👥 My Affiliates</div>
+        <div class="sidebar-item">📋 Referral Log</div>
+        <div class="sidebar-item">✅ Validate</div>
+        <div class="sidebar-section">Money</div>
+        <div class="sidebar-item active">💰 Commission Setup</div>
+        <div class="sidebar-item">💳 Wallet</div>
+        <div class="sidebar-item">📑 Payouts</div>
+        <div class="sidebar-section">Settings</div>
+        <div class="sidebar-item">🏪 Business Profile</div>
+        <div class="sidebar-item">⚙️ Account</div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="breadcrumb">Dashboard / Money / <span>Commission Setup</span></div>
+        <div class="page-header">
+            <h1>Commission Setup</h1>
+            <p>Configure what you pay affiliates per referral. Higher commissions attract more affiliates.</p>
+        </div>
+
+        <div class="two-col">
+            <!-- LEFT: Configuration -->
+            <div>
+                <!-- Step 1: Business Info -->
+                <div class="card">
+                    <h3>1️⃣ Your Business</h3>
+                    <div class="card-sub">Tell us about your average sale so we can suggest a commission.</div>
+
+                    <div class="form-group">
+                        <label class="form-label">Business Category</label>
+                        <select class="input-field" id="category" onchange="updatePreview()">
+                            <option value="">Select your industry...</option>
+                            <option value="food-bev">☕ Food & Beverage</option>
+                            <option value="restaurant">🍽️ Restaurant / Bar</option>
+                            <option value="beauty">💇 Beauty / Salon / Barber</option>
+                            <option value="tattoo" selected>🎨 Tattoo / Piercing / Body Art</option>
+                            <option value="auto">🔧 Auto Repair / Detailing</option>
+                            <option value="health">🏥 Health / Med Spa / Dental</option>
+                            <option value="fitness">💪 Fitness / Gym / Studio</option>
+                            <option value="home">🏠 Home Services / Contractor</option>
+                            <option value="realestate">🏘️ Real Estate</option>
+                            <option value="auto-sales">🚗 Auto Sales / Dealership</option>
+                            <option value="apartment">🏢 Apartments / Leasing</option>
+                            <option value="legal">⚖️ Legal / Financial</option>
+                            <option value="retail">🛍️ Retail / Boutique</option>
+                            <option value="pet">🐾 Pet Services</option>
+                            <option value="education">📚 Education / Tutoring</option>
+                            <option value="entertainment">🎭 Entertainment / Events</option>
+                            <option value="other">📦 Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Average Ticket (Customer Spend)</label>
+                        <div class="input-prefix">
+                            <span class="prefix">$</span>
+                            <input type="number" class="input-field" id="avgTicket" value="200" placeholder="e.g. 200" oninput="updatePreview()">
+                        </div>
+                        <div class="form-hint">What does an average customer spend per visit?</div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Commission Type -->
+                <div class="card">
+                    <h3>2️⃣ Commission Type</h3>
+                    <div class="card-sub">Choose how you want to pay affiliates.</div>
+
+                    <div class="type-selector">
+                        <div class="type-option selected" onclick="selectType('percentage', this)">
+                            <div class="type-icon">📊</div>
+                            <div class="type-name">Percentage</div>
+                            <div class="type-desc">% of each sale</div>
+                        </div>
+                        <div class="type-option" onclick="selectType('flat', this)">
+                            <div class="type-icon">💵</div>
+                            <div class="type-name">Flat Amount</div>
+                            <div class="type-desc">Fixed $ per referral</div>
+                        </div>
+                        <div class="type-option" onclick="selectType('tiered', this)">
+                            <div class="type-icon">📈</div>
+                            <div class="type-name">Tiered</div>
+                            <div class="type-desc">Increases with volume</div>
+                        </div>
+                    </div>
+
+                    <!-- Percentage Config -->
+                    <div id="config-percentage">
+                        <div class="form-group">
+                            <label class="form-label">Commission Rate</label>
+                            <div class="slider-value" id="rateDisplay" style="color: #00d4ff;">10%</div>
+                            <input type="range" id="rateSlider" min="1" max="25" value="10" oninput="updateRate()">
+                            <div class="slider-labels">
+                                <span>1%</span>
+                                <span>5%</span>
+                                <span>10%</span>
+                                <span>15%</span>
+                                <span>20%</span>
+                                <span>25%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flat Config (hidden by default) -->
+                    <div id="config-flat" style="display:none;">
+                        <div class="form-group">
+                            <label class="form-label">Flat Amount Per Referral</label>
+                            <div class="slider-value" id="flatDisplay" style="color: #22c55e;">$20</div>
+                            <input type="range" id="flatSlider" min="1" max="500" value="20" oninput="updateFlat()">
+                            <div class="slider-labels">
+                                <span>$1</span>
+                                <span>$25</span>
+                                <span>$100</span>
+                                <span>$250</span>
+                                <span>$500</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tiered Config (hidden by default) -->
+                    <div id="config-tiered" style="display:none;">
+                        <div class="form-group">
+                            <label class="form-label">Tier 1: First 25 referrals/month</label>
+                            <div class="input-prefix">
+                                <span class="prefix">$</span>
+                                <input type="number" class="input-field" value="15" id="tier1" oninput="updatePreview()">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tier 2: 26-50 referrals/month</label>
+                            <div class="input-prefix">
+                                <span class="prefix">$</span>
+                                <input type="number" class="input-field" value="20" id="tier2" oninput="updatePreview()">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tier 3: 51+ referrals/month</label>
+                            <div class="input-prefix">
+                                <span class="prefix">$</span>
+                                <input type="number" class="input-field" value="25" id="tier3" oninput="updatePreview()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="floor-warning" class="warning-box" style="display:none;">
+                        <span class="warn-icon">⚠️</span>
+                        <p id="floor-message">Your commission is below the minimum floor for your ticket size. Please increase to at least $X.XX.</p>
+                    </div>
+
+                    <div class="tip-box">
+                        <span class="tip-icon">💡</span>
+                        <p><strong>Pro tip:</strong> Businesses offering above-average commissions get 3x more affiliate applications. Your competitors' affiliates will switch to you.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3: Wallet -->
+                <div class="card">
+                    <h3>3️⃣ Commission Wallet</h3>
+                    <div class="card-sub">Pre-fund your wallet so affiliates get paid instantly.</div>
+
+                    <div class="form-group">
+                        <label class="form-label">Initial Wallet Load</label>
+                        <div class="slider-value" id="walletDisplay" style="color: #22c55e;">$200</div>
+                        <input type="range" id="walletSlider" min="50" max="2000" step="50" value="200" oninput="updateWallet()">
+                        <div class="slider-labels">
+                            <span>$50</span>
+                            <span>$250</span>
+                            <span>$500</span>
+                            <span>$1,000</span>
+                            <span>$2,000</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Auto-Recharge When Balance Drops Below</label>
+                        <div class="wallet-bar">
+                            <span style="font-size: 0.85rem; white-space: nowrap;" id="rechargeThreshold">$50 (25%)</span>
+                            <div class="wallet-gauge">
+                                <div class="wallet-gauge-fill" style="width: 25%;" id="rechargeGauge"></div>
+                            </div>
+                        </div>
+                        <div class="form-hint" style="margin-top: 8px;">When your wallet hits this level, we'll auto-recharge via ACH from your bank account back to your initial load amount.</div>
+                    </div>
+
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <h4>ACH Auto-Recharge</h4>
+                            <p>Automatically pull funds via ACH when wallet runs low</p>
+                        </div>
+                        <div class="toggle on" onclick="this.classList.toggle('on')">
+                            <div class="toggle-dot"></div>
+                        </div>
+                    </div>
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <h4>Pay $49/month via ACH</h4>
+                            <p>Use the same bank account for your monthly subscription</p>
+                        </div>
+                        <div class="toggle on" onclick="this.classList.toggle('on')">
+                            <div class="toggle-dot"></div>
+                        </div>
+                    </div>
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <h4>Low Balance Alerts</h4>
+                            <p>Email + push notification when wallet is running low</p>
+                        </div>
+                        <div class="toggle on" onclick="this.classList.toggle('on')">
+                            <div class="toggle-dot"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Additional Settings -->
+                <div class="card">
+                    <h3>4️⃣ Additional Settings</h3>
+                    <div class="card-sub">Fine-tune how your commission program works.</div>
+
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <h4>Commission Cap Per Referral</h4>
+                            <p>Set a maximum payout per single referral (good for high-ticket items)</p>
+                        </div>
+                        <div class="toggle" onclick="toggleCap(this)">
+                            <div class="toggle-dot"></div>
+                        </div>
+                    </div>
+                    <div id="capConfig" style="display:none; padding: 12px 0;">
+                        <div class="input-prefix">
+                            <span class="prefix">Max $</span>
+                            <input type="number" class="input-field" value="100" placeholder="e.g. 100" oninput="updatePreview()">
+                        </div>
+                    </div>
+
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <h4>First-Time Customer Bonus</h4>
+                            <p>Pay affiliates extra for brand-new customers vs returning ones</p>
+                        </div>
+                        <div class="toggle" onclick="this.classList.toggle('on')">
+                            <div class="toggle-dot"></div>
+                        </div>
+                    </div>
+
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <h4>Require Minimum Purchase</h4>
+                            <p>Only pay commission if the referred customer spends above a threshold</p>
+                        </div>
+                        <div class="toggle" onclick="this.classList.toggle('on')">
+                            <div class="toggle-dot"></div>
+                        </div>
+                    </div>
+
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <h4>Auto-Approve Referrals</h4>
+                            <p>Automatically validate referrals or manually review each one</p>
+                        </div>
+                        <div class="toggle on" onclick="this.classList.toggle('on')">
+                            <div class="toggle-dot"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn-primary" onclick="alert('Commission settings saved! (This is a mockup)')">Save Commission Settings →</button>
+                    <button class="btn-outline">Preview as Affiliate</button>
+                </div>
+            </div>
+
+            <!-- RIGHT: Live Preview -->
+            <div style="position: sticky; top: 32px;">
+                <div class="preview-panel">
+                    <h3>📊 Live Preview</h3>
+                    <div class="preview-row">
+                        <span class="preview-label">Category</span>
+                        <span class="preview-value" id="prevCategory">🎨 Tattoo / Piercing</span>
+                    </div>
+                    <div class="preview-row">
+                        <span class="preview-label">Avg Ticket</span>
+                        <span class="preview-value" id="prevTicket">$200</span>
+                    </div>
+                    <div class="preview-row">
+                        <span class="preview-label">Commission Type</span>
+                        <span class="preview-value blue" id="prevType">Percentage (10%)</span>
+                    </div>
+                    <div class="preview-row">
+                        <span class="preview-label">Per Referral Payout</span>
+                        <span class="preview-value green" id="prevPayout" style="font-size: 1.1rem;">$20.00</span>
+                    </div>
+                    <div class="preview-row">
+                        <span class="preview-label">Minimum Floor</span>
+                        <span class="preview-value" id="prevFloor" style="color: #6b7280;">$5.00</span>
+                    </div>
+                    <div class="preview-row">
+                        <span class="preview-label">Wallet Load</span>
+                        <span class="preview-value" id="prevWallet">$200</span>
+                    </div>
+                    <div class="preview-row">
+                        <span class="preview-label">Referrals Covered</span>
+                        <span class="preview-value gold" id="prevCovered">~10 referrals</span>
+                    </div>
+                    <div class="preview-row" style="border-bottom: 2px solid #2a2a3a; padding-bottom: 14px;">
+                        <span class="preview-label">Monthly Cost (10 refs)</span>
+                        <span class="preview-value" id="prevMonthlyCost">$200 + $49 sub</span>
+                    </div>
+                    <div class="preview-row">
+                        <span class="preview-label">vs Google Ads (10 leads)</span>
+                        <span class="preview-value red" id="prevAds">~$500 – $1,200</span>
+                    </div>
+                    <div class="preview-row">
+                        <span class="preview-label">Your Savings</span>
+                        <span class="preview-value green" id="prevSavings" style="font-size: 1.05rem;">$251 – $951/mo</span>
+                    </div>
+
+                    <!-- What affiliates see -->
+                    <div class="affiliate-preview">
+                        <h4>👁️ How Affiliates See You</h4>
+                        <div class="ap-header">
+                            <div class="ap-avatar">🎨</div>
+                            <div>
+                                <div class="ap-name" id="prevBizName">Platinum Tattoos & Piercings</div>
+                                <div class="ap-category" id="prevBizCat">Tattoo / Piercing · San Antonio, TX</div>
+                            </div>
+                        </div>
+                        <div class="ap-commission">
+                            <div>
+                                <div class="comm-label">Commission per referral</div>
+                            </div>
+                            <div class="comm-value" id="prevAffPayout">$20.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Competitiveness Meter -->
+                <div class="card" style="text-align: center;">
+                    <h3>🏆 Affiliate Attractiveness</h3>
+                    <div class="card-sub">How competitive is your offer?</div>
+                    <div style="font-size: 2.5rem; margin: 12px 0;" id="attractIcon">🔥</div>
+                    <div style="font-size: 1.1rem; font-weight: 700; color: #22c55e;" id="attractLabel">Very Attractive</div>
+                    <div style="font-size: 0.8rem; color: #6b7280; margin-top: 4px;" id="attractDesc">Affiliates will actively seek to represent you.</div>
+                    
+                    <div style="margin-top: 16px; height: 8px; background: #2a2a3a; border-radius: 4px; overflow: hidden;">
+                        <div id="attractBar" style="height: 100%; width: 75%; background: linear-gradient(90deg, #f87171, #fbbf24, #22c55e); border-radius: 4px; transition: width 0.3s;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 6px; font-size: 0.7rem; color: #4b5563;">
+                        <span>Low</span>
+                        <span>Average</span>
+                        <span>High</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let commissionType = 'percentage';
+
+    function selectType(type, el) {
+        commissionType = type;
+        document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+        
+        document.getElementById('config-percentage').style.display = type === 'percentage' ? 'block' : 'none';
+        document.getElementById('config-flat').style.display = type === 'flat' ? 'block' : 'none';
+        document.getElementById('config-tiered').style.display = type === 'tiered' ? 'block' : 'none';
+        
+        updatePreview();
+    }
+
+    function updateRate() {
+        const rate = document.getElementById('rateSlider').value;
+        document.getElementById('rateDisplay').textContent = rate + '%';
+        
+        if (rate >= 15) {
+            document.getElementById('rateDisplay').style.color = '#22c55e';
+        } else if (rate >= 8) {
+            document.getElementById('rateDisplay').style.color = '#00d4ff';
+        } else {
+            document.getElementById('rateDisplay').style.color = '#fbbf24';
+        }
+        
+        updatePreview();
+    }
+
+    function updateFlat() {
+        const flat = document.getElementById('flatSlider').value;
+        document.getElementById('flatDisplay').textContent = '$' + flat;
+        updatePreview();
+    }
+
+    function updateWallet() {
+        const wallet = parseInt(document.getElementById('walletSlider').value);
+        document.getElementById('walletDisplay').textContent = '$' + wallet.toLocaleString();
+        const threshold = Math.round(wallet * 0.25);
+        document.getElementById('rechargeThreshold').textContent = '$' + threshold + ' (25%)';
+        updatePreview();
+    }
+
+    function toggleCap(el) {
+        el.classList.toggle('on');
+        document.getElementById('capConfig').style.display = el.classList.contains('on') ? 'block' : 'none';
+    }
+
+    function getFloor(ticket) {
+        if (ticket < 25) return 1.50;
+        if (ticket < 75) return 3.00;
+        if (ticket < 200) return 5.00;
+        if (ticket < 500) return 10.00;
+        return 25.00;
+    }
+
+    function updatePreview() {
+        const ticket = parseFloat(document.getElementById('avgTicket').value) || 0;
+        const wallet = parseInt(document.getElementById('walletSlider').value) || 200;
+        const floor = getFloor(ticket);
+        let payout = 0;
+        let typeLabel = '';
+
+        if (commissionType === 'percentage') {
+            const rate = parseInt(document.getElementById('rateSlider').value) || 10;
+            payout = ticket * (rate / 100);
+            typeLabel = 'Percentage (' + rate + '%)';
+        } else if (commissionType === 'flat') {
+            payout = parseInt(document.getElementById('flatSlider').value) || 20;
+            typeLabel = 'Flat Amount';
+        } else {
+            payout = parseInt(document.getElementById('tier1').value) || 15;
+            typeLabel = 'Tiered ($' + (document.getElementById('tier1').value || 15) + ' / $' + (document.getElementById('tier2').value || 20) + ' / $' + (document.getElementById('tier3').value || 25) + ')';
+        }
+
+        // Floor check
+        if (payout < floor && ticket > 0) {
+            document.getElementById('floor-warning').style.display = 'flex';
+            document.getElementById('floor-message').textContent = 'Your commission ($' + payout.toFixed(2) + ') is below the minimum floor of $' + floor.toFixed(2) + ' for your ticket size. Please increase your rate.';
+        } else {
+            document.getElementById('floor-warning').style.display = 'none';
+        }
+
+        const covered = payout > 0 ? Math.floor(wallet / payout) : 0;
+        const monthlyCost = (covered > 0 ? payout * Math.min(covered, 10) : 0);
+
+        // Category display
+        const catSelect = document.getElementById('category');
+        const catText = catSelect.options[catSelect.selectedIndex]?.text || 'Select...';
+
+        document.getElementById('prevCategory').textContent = catText;
+        document.getElementById('prevTicket').textContent = '$' + ticket.toLocaleString();
+        document.getElementById('prevType').textContent = typeLabel;
+        document.getElementById('prevPayout').textContent = '$' + payout.toFixed(2);
+        document.getElementById('prevFloor').textContent = '$' + floor.toFixed(2);
+        document.getElementById('prevWallet').textContent = '$' + wallet.toLocaleString();
+        document.getElementById('prevCovered').textContent = '~' + covered + ' referrals';
+        document.getElementById('prevMonthlyCost').textContent = '$' + monthlyCost.toFixed(0) + ' + $49 sub';
+        document.getElementById('prevAffPayout').textContent = '$' + payout.toFixed(2);
+
+        // Google ads comparison (rough)
+        const adLow = Math.round(ticket * 0.25 * 10);
+        const adHigh = Math.round(ticket * 0.6 * 10);
+        document.getElementById('prevAds').textContent = '~$' + adLow + ' – $' + adHigh;
+        
+        const savingsLow = Math.max(0, adLow - monthlyCost - 49);
+        const savingsHigh = Math.max(0, adHigh - monthlyCost - 49);
+        document.getElementById('prevSavings').textContent = '$' + savingsLow + ' – $' + savingsHigh + '/mo';
+
+        // Attractiveness
+        let attractScore = 0;
+        if (ticket > 0) {
+            const ratio = payout / ticket;
+            if (ratio >= 0.15) attractScore = 100;
+            else if (ratio >= 0.10) attractScore = 75;
+            else if (ratio >= 0.07) attractScore = 50;
+            else if (ratio >= 0.04) attractScore = 30;
+            else attractScore = 15;
+        }
+
+        document.getElementById('attractBar').style.width = attractScore + '%';
+        if (attractScore >= 75) {
+            document.getElementById('attractIcon').textContent = '🔥';
+            document.getElementById('attractLabel').textContent = 'Very Attractive';
+            document.getElementById('attractLabel').style.color = '#22c55e';
+            document.getElementById('attractDesc').textContent = 'Affiliates will actively seek to represent you.';
+        } else if (attractScore >= 50) {
+            document.getElementById('attractIcon').textContent = '👍';
+            document.getElementById('attractLabel').textContent = 'Competitive';
+            document.getElementById('attractLabel').style.color = '#00d4ff';
+            document.getElementById('attractDesc').textContent = 'Good rate. You\'ll attract solid affiliates.';
+        } else if (attractScore >= 30) {
+            document.getElementById('attractIcon').textContent = '😐';
+            document.getElementById('attractLabel').textContent = 'Below Average';
+            document.getElementById('attractLabel').style.color = '#fbbf24';
+            document.getElementById('attractDesc').textContent = 'Consider increasing to attract more affiliates.';
+        } else {
+            document.getElementById('attractIcon').textContent = '⚠️';
+            document.getElementById('attractLabel').textContent = 'Low — Few Takers';
+            document.getElementById('attractLabel').style.color = '#f87171';
+            document.getElementById('attractDesc').textContent = 'Most affiliates will skip this. Increase your rate.';
+        }
+    }
+
+    // Init
+    updatePreview();
+</script>
+
+</body>
+</html>
