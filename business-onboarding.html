@@ -284,8 +284,9 @@
         <div class="progress-step active" id="ps-1">Business</div>
         <div class="progress-step" id="ps-2">Commission</div>
         <div class="progress-step" id="ps-3">Wallet</div>
-        <div class="progress-step" id="ps-4">Invite</div>
-        <div class="progress-step" id="ps-5">Done!</div>
+        <div class="progress-step" id="ps-4">Connect</div>
+        <div class="progress-step" id="ps-5">Invite</div>
+        <div class="progress-step" id="ps-6">Done!</div>
     </div>
     <div class="progress-bar">
         <div class="progress-fill" id="progressFill" style="width: 10%;"></div>
@@ -455,8 +456,102 @@
         </div>
     </div>
 
-    <!-- STEP 4: Invite Affiliates -->
+    <!-- STEP 4: Connect Tools (GHL / POS / Standalone) -->
     <div class="step" id="step-4">
+        <div class="step-icon">🔌</div>
+        <h2>Connect Your Tools</h2>
+        <p class="step-sub">Paid2Say works standalone or plugs into what you already use. Pick what fits — you can always change later.</p>
+
+        <!-- GHL Option -->
+        <div style="margin-bottom: 12px;">
+            <div id="opt-ghl" onclick="selectIntegration('ghl')" style="background:#12121a; border:2px solid #2a2a3a; border-radius:14px; padding:20px; display:flex; align-items:center; gap:16px; cursor:pointer; transition:border-color 0.2s;">
+                <div style="width:48px; height:48px; background:linear-gradient(135deg, #ff6b35, #ff4500); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">⚡</div>
+                <div style="flex:1;">
+                    <h4 style="font-size:0.95rem; margin-bottom:2px;">GoHighLevel (GHL)</h4>
+                    <p style="font-size:0.78rem; color:#6b7280;">Connect your GHL location. Referrals auto-create contacts and flow through your existing pipeline.</p>
+                </div>
+                <div style="color:#6b7280; font-size:1.2rem;">→</div>
+            </div>
+        </div>
+
+        <!-- GHL Config (hidden) -->
+        <div id="ghl-config" style="display:none; background:#12121a; border:1px solid #ff6b3533; border-radius:14px; padding:24px; margin-bottom:16px; animation: fadeSlideIn 0.3s ease;">
+            <h4 style="margin-bottom:14px; color:#ff6b35;">⚡ GoHighLevel Setup</h4>
+            <div class="form-group">
+                <label class="form-label">GHL Location ID</label>
+                <input type="text" class="input-field" placeholder="e.g. abc123XYZ">
+                <div class="form-hint">GHL → Settings → Business Info → Location ID</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">GHL API Key</label>
+                <input type="text" class="input-field" placeholder="Your GHL API key">
+                <div class="form-hint">Settings → Integrations → API Keys</div>
+            </div>
+            <div style="background:#14532d22; border:1px solid #22c55e33; border-radius:10px; padding:14px; margin-top:8px;">
+                <p style="font-size:0.78rem; color:#86efac; line-height:1.5;">✅ <strong>What connects:</strong> Referrals auto-create GHL contacts · Status syncs with your pipeline · Commissions trigger on stage changes · Works with existing funnels</p>
+            </div>
+        </div>
+
+        <!-- POS Option -->
+        <div style="margin-bottom: 12px;">
+            <div id="opt-pos" onclick="selectIntegration('pos')" style="background:#12121a; border:2px solid #2a2a3a; border-radius:14px; padding:20px; display:flex; align-items:center; gap:16px; cursor:pointer; transition:border-color 0.2s;">
+                <div style="width:48px; height:48px; background:linear-gradient(135deg, #22c55e, #16a34a); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">💳</div>
+                <div style="flex:1;">
+                    <h4 style="font-size:0.95rem; margin-bottom:2px;">Point of Sale (POS)</h4>
+                    <p style="font-size:0.78rem; color:#6b7280;">Connect Square, Clover, Shopify, or Toast. Sales auto-verify, commissions fire instantly.</p>
+                </div>
+                <div style="color:#6b7280; font-size:1.2rem;">→</div>
+            </div>
+        </div>
+
+        <!-- POS Config (hidden) -->
+        <div id="pos-config" style="display:none; background:#12121a; border:1px solid #22c55e33; border-radius:14px; padding:24px; margin-bottom:16px; animation: fadeSlideIn 0.3s ease;">
+            <h4 style="margin-bottom:14px; color:#22c55e;">💳 Select Your POS</h4>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div style="background:#1a1a2e; border:2px solid #2a2a3a; border-radius:10px; padding:18px; text-align:center; cursor:pointer;" onmouseover="this.style.borderColor='#22c55e'" onmouseout="this.style.borderColor='#2a2a3a'">
+                    <div style="font-size:1.5rem; margin-bottom:4px;">⬜</div>
+                    <div style="font-size:0.82rem; font-weight:600;">Square</div>
+                </div>
+                <div style="background:#1a1a2e; border:2px solid #2a2a3a; border-radius:10px; padding:18px; text-align:center; cursor:pointer;" onmouseover="this.style.borderColor='#22c55e'" onmouseout="this.style.borderColor='#2a2a3a'">
+                    <div style="font-size:1.5rem; margin-bottom:4px;">🍀</div>
+                    <div style="font-size:0.82rem; font-weight:600;">Clover</div>
+                </div>
+                <div style="background:#1a1a2e; border:2px solid #2a2a3a; border-radius:10px; padding:18px; text-align:center; cursor:pointer;" onmouseover="this.style.borderColor='#22c55e'" onmouseout="this.style.borderColor='#2a2a3a'">
+                    <div style="font-size:1.5rem; margin-bottom:4px;">🛍️</div>
+                    <div style="font-size:0.82rem; font-weight:600;">Shopify</div>
+                </div>
+                <div style="background:#1a1a2e; border:2px solid #2a2a3a; border-radius:10px; padding:18px; text-align:center; cursor:pointer;" onmouseover="this.style.borderColor='#22c55e'" onmouseout="this.style.borderColor='#2a2a3a'">
+                    <div style="font-size:1.5rem; margin-bottom:4px;">🍞</div>
+                    <div style="font-size:0.82rem; font-weight:600;">Toast</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Standalone Option -->
+        <div style="margin-bottom: 16px;">
+            <div id="opt-standalone" onclick="selectIntegration('standalone')" style="background:#12121a; border:2px solid #2a2a3a; border-radius:14px; padding:20px; display:flex; align-items:center; gap:16px; cursor:pointer; transition:border-color 0.2s;">
+                <div style="width:48px; height:48px; background:linear-gradient(135deg, #7b2ff7, #5b1fd7); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">📋</div>
+                <div style="flex:1;">
+                    <h4 style="font-size:0.95rem; margin-bottom:2px;">Standalone (No Integrations)</h4>
+                    <p style="font-size:0.78rem; color:#6b7280;">Use Paid2Say on its own. Confirm sales manually within 24 hours or they auto-approve.</p>
+                </div>
+                <div style="color:#6b7280; font-size:1.2rem;">→</div>
+            </div>
+        </div>
+
+        <div class="tip-box">
+            <span class="tip-icon">💡</span>
+            <p><strong>No pressure.</strong> You can add GHL, POS, or any integration later from your dashboard settings. Pick standalone to get started fast.</p>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn-back" onclick="goToStep(3)">← Back</button>
+            <button class="btn-next" onclick="goToStep(5)">Continue →</button>
+        </div>
+    </div>
+
+    <!-- STEP 5: Invite Affiliates -->
+    <div class="step" id="step-5">
         <div class="step-icon">📲</div>
         <h2>Invite Your First Affiliates</h2>
         <p class="step-sub">Share your business link or QR code. Anyone who signs up through it becomes your recruited affiliate.</p>
@@ -490,13 +585,13 @@
         </div>
 
         <div class="btn-row">
-            <button class="btn-back" onclick="goToStep(3)">← Back</button>
-            <button class="btn-next green" onclick="goToStep(5)">Launch My Business 🚀</button>
+            <button class="btn-back" onclick="goToStep(4)">← Back</button>
+            <button class="btn-next green" onclick="goToStep(6)">Launch My Business 🚀</button>
         </div>
     </div>
 
-    <!-- STEP 5: Complete! -->
-    <div class="step" id="step-5">
+    <!-- STEP 6: Complete! -->
+    <div class="step" id="step-6">
         <div class="success-checkmark">✓</div>
         <h2>You're Live on Paid2Say! 🎉</h2>
         <p class="step-sub">Your business is ready to receive affiliates and referrals. Here's your setup summary.</p>
@@ -543,7 +638,25 @@
 
 <script>
     let currentStep = 1;
-    const totalSteps = 5;
+    const totalSteps = 6;
+
+    function selectIntegration(type) {
+        document.getElementById('opt-ghl').style.borderColor = '#2a2a3a';
+        document.getElementById('opt-pos').style.borderColor = '#2a2a3a';
+        document.getElementById('opt-standalone').style.borderColor = '#2a2a3a';
+        document.getElementById('ghl-config').style.display = 'none';
+        document.getElementById('pos-config').style.display = 'none';
+
+        if (type === 'ghl') {
+            document.getElementById('opt-ghl').style.borderColor = '#ff6b35';
+            document.getElementById('ghl-config').style.display = 'block';
+        } else if (type === 'pos') {
+            document.getElementById('opt-pos').style.borderColor = '#22c55e';
+            document.getElementById('pos-config').style.display = 'block';
+        } else {
+            document.getElementById('opt-standalone').style.borderColor = '#7b2ff7';
+        }
+    }
 
     function goToStep(step) {
         // Hide current
